@@ -23,13 +23,13 @@ const RINGS = [10,9,8,7,6,5,4,3,2,1,0];
 const STORAGE_KEY = "shooting-sessions";
 const RANGE_KEY = "shooting-range-name";
 const HAND_KEY = "shooting-hand";
-const CUSTOM_WEAPONS_KEY = "shooting-custom-weapons"; // legacy, nur fÃ¼r Migration gelesen
+const CUSTOM_WEAPONS_KEY = "shooting-custom-weapons"; // legacy, nur für Migration gelesen
 const WEAPONS_KEY = "shooting-weapons";
 const CUSTOM_CALIBERS_KEY = "shooting-custom-calibers";
 
 const WEAPON_CATEGORIES = [
-  { key: "repetierbuechse", label: "RepetierbÃ¼chse" },
-  { key: "halbautomatisch", label: "Halbautomatische BÃ¼chse" },
+  { key: "repetierbuechse", label: "Repetierbüchse" },
+  { key: "halbautomatisch", label: "Halbautomatische Büchse" },
   { key: "kurzwaffe", label: "Kurzwaffe" }
 ];
 
@@ -54,7 +54,7 @@ const MODES = [
   { key: "frei", label: "Frei" }
 ];
 
-// Nur Disziplinnummern, die direkt aus der DSB-Sportordnung bestÃ¤tigt werden konnten.
+// Nur Disziplinnummern, die direkt aus der DSB-Sportordnung bestätigt werden konnten.
 // Quelle u.a.: dsb.de Teil 1 (Gewehr) und Teil 2 (Pistole/Revolver) der Sportordnung.
 const DSB_DISCIPLINES = {
   "1.92": { name: "1.92 GK-Gewehr 100m liegend, Diopter (30 Schuss)", shots: 30, distance: 100, discipline: null },
@@ -66,12 +66,12 @@ const DSB_DISCIPLINES = {
   "9.23": { name: "9.23 GK-Selbstladegewehr sitzend aufgelegt, offene Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
   "9.24": { name: "9.24 GK-Selbstladegewehr sitzend aufgelegt, geschl. Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
   "9.25": { name: "9.25 GK-Selbstladegewehr sitzend aufgelegt, Zielfernrohr (30 Schuss)", shots: 30, distance: 100, discipline: null },
-  "9.26": { name: "9.26 GK-Selbstladegewehr stehend freihÃ¤ndig, offene Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
-  "9.27": { name: "9.27 GK-Selbstladegewehr stehend freihÃ¤ndig, geschl. Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
-  "9.60": { name: "9.60 GK-Sportpistole 25m, einhÃ¤ndig, Zentrumswertung (30 Schuss)", shots: 30, distance: 25, discipline: "praezision" },
-  "9.63": { name: "9.63 GK-Sportpistole 25m, beidhÃ¤ndig erlaubt, Zentrumswertung (30 Schuss)", shots: 30, distance: 25, discipline: "praezision" },
-  "2.53": { name: "2.53 (national DSB) GK-Pistole 9mm Luger 25m, PrÃ¤zision-HÃ¤lfte (30 v. 60)", shots: 30, distance: 25, discipline: "praezision" },
-  "2.55": { name: "2.55 (national DSB) GK-Revolver .357 Mag. 25m, PrÃ¤zision-HÃ¤lfte (30 v. 60)", shots: 30, distance: 25, discipline: "praezision" }
+  "9.26": { name: "9.26 GK-Selbstladegewehr stehend freihändig, offene Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
+  "9.27": { name: "9.27 GK-Selbstladegewehr stehend freihändig, geschl. Visierung (30 Schuss)", shots: 30, distance: 100, discipline: null },
+  "9.60": { name: "9.60 GK-Sportpistole 25m, einhändig, Zentrumswertung (30 Schuss)", shots: 30, distance: 25, discipline: "praezision" },
+  "9.63": { name: "9.63 GK-Sportpistole 25m, beidhändig erlaubt, Zentrumswertung (30 Schuss)", shots: 30, distance: 25, discipline: "praezision" },
+  "2.53": { name: "2.53 (national DSB) GK-Pistole 9mm Luger 25m, Präzision-Hälfte (30 v. 60)", shots: 30, distance: 25, discipline: "praezision" },
+  "2.55": { name: "2.55 (national DSB) GK-Revolver .357 Mag. 25m, Präzision-Hälfte (30 v. 60)", shots: 30, distance: 25, discipline: "praezision" }
 };
 
 function weaponCategory(w) { return w.category || "kurzwaffe"; }
@@ -84,7 +84,7 @@ let state = {
   caliber: WEAPONS[0].caliber,
   mode: "frei",
   discipline: "praezision",
-  range: "SchÃ¼tzengilde zu JÃ¼terbog",
+  range: "Schützengilde zu Jüterbog",
   shooterHand: "rechts",
   ballisticCaliber: null,
   ballisticV0: null,
@@ -214,7 +214,7 @@ async function fetchWeather(query) {
     }
     if (!geo) {
       state.weatherStatus = "error";
-      state.weatherError = "Ort fÃ¼r Wetterdaten nicht gefunden. Trag ggf. den Ortsnamen mit ein, z. B. \"JÃ¼terbog\".";
+      state.weatherError = "Ort für Wetterdaten nicht gefunden. Trag ggf. den Ortsnamen mit ein, z. B. \"Jüterbog\".";
       render();
       return;
     }
@@ -260,7 +260,7 @@ function persist() {
     state.saveError = "";
     return true;
   } catch (e) {
-    state.saveError = "Speichern auf dem GerÃ¤t fehlgeschlagen (" + (e && e.message ? e.message : "unbekannter Fehler") + ").";
+    state.saveError = "Speichern auf dem Gerät fehlgeschlagen (" + (e && e.message ? e.message : "unbekannter Fehler") + ").";
     return false;
   }
 }
@@ -483,7 +483,7 @@ function buildExportData(mode) {
       .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
       .forEach(s => {
         seriesRows.push(csvRow([
-          formatDate(s.date), s.distance, s.distance === 25 ? (s.discipline === "duell" ? "Duell" : "PrÃ¤zision") : "",
+          formatDate(s.date), s.distance, s.distance === 25 ? (s.discipline === "duell" ? "Duell" : "Präzision") : "",
           s.weapon || "", s.caliber || "",
           s.mode ? (MODES.find(m => m.key === s.mode) ? MODES.find(m => m.key === s.mode).label : s.mode) : "",
           s.range || "", s.shots.map(shotRing).join(" "), s.sum, String(s.avg.toFixed(2)).replace(".", ","),
@@ -506,7 +506,7 @@ function buildExportData(mode) {
       + csvRow(["SERIEN JE TAG"].concat(Array(seriesCols - 1).fill(""))) + "\r\n"
       + seriesRows.join("\r\n")
       + "\r\n\r\n"
-      + csvRow(["TAGESÃœBERSICHT"].concat(Array(summaryCols - 1).fill(""))) + "\r\n"
+      + csvRow(["TAGESÜBERSICHT"].concat(Array(summaryCols - 1).fill(""))) + "\r\n"
       + summaryRows.join("\r\n");
 
     return {
@@ -526,7 +526,7 @@ function buildExportData(mode) {
   const rows = [csvRow(["Datum", "Distanz (m)", "Disziplin", "Waffe", "Kaliber", "Modus", "Schiessplatz", "Schuesse (Ringwerte)", "Ringsumme", "Schnitt", "Temperatur (C)", "Wind (m/s)", "Windrichtung", "Luftfeuchte (%)", "Luftdruck (hPa)"])];
   [...state.sessions].sort((a,b) => a.date < b.date ? -1 : 1).forEach(s => {
     rows.push(csvRow([
-      formatDate(s.date), s.distance, s.distance === 25 ? (s.discipline === "duell" ? "Duell" : "PrÃ¤zision") : "",
+      formatDate(s.date), s.distance, s.distance === 25 ? (s.discipline === "duell" ? "Duell" : "Präzision") : "",
       s.weapon || "", s.caliber || "",
       s.mode ? (MODES.find(m => m.key === s.mode) ? MODES.find(m => m.key === s.mode).label : s.mode) : "",
       s.range || "", s.shots.map(shotRing).join(" "), s.sum, String(s.avg.toFixed(2)).replace(".", ","),
@@ -602,7 +602,7 @@ function importDataFromFile(file, mode) {
       state.saveError = added > 0 ? "" : "Keine neuen Serien in der Datei gefunden (evtl. schon vorhanden).";
       render();
     } catch (e) {
-      state.saveError = "Import fehlgeschlagen: Datei ist kein gÃ¼ltiges Sicherungsformat.";
+      state.saveError = "Import fehlgeschlagen: Datei ist kein gültiges Sicherungsformat.";
       render();
     }
   };
@@ -628,7 +628,7 @@ async function saveSeries() {
     weapon: state.weapon, caliber: state.caliber, mode: state.mode, discipline: state.discipline,
     range: state.range, weather: state.weather,
     notes: state.noteText.trim(), lotNumber: state.lotNumber.trim(),
-    presetName: state.competitionPreset ? state.competitionPreset.name : null,
+    presetName: state.competitionPreset ? (state.discipline === "duell" ? state.competitionPreset.name.replace("Präzision-Hälfte", "Duell-Hälfte") : state.competitionPreset.name) : null,
     competitionGroupId: state.competitionGroupId || null,
     shots: state.shots.slice(), sum, avg: sum / state.shots.length
   };
@@ -685,8 +685,8 @@ function getSummary(filtered) {
 }
 
 const TARGET_PROFILES = {
-  praezision100: { minRing: 0, maxRing: 10, innerRadiusMM: 25, stepMM: 25, blackFromRing: 7, allBlack: false, hasInnenzehner: true }, // DSB SpO: Ordonnanz-/Scheibengewehr 100m, 25m PrÃ¤zision, Freie Pistole 50m
-  praezision300: { minRing: 0, maxRing: 10, innerRadiusMM: 50, stepMM: 50, blackFromRing: 5, allBlack: false, hasInnenzehner: true }, // DSB SpO: GroÃŸkalibergewehr 300m
+  praezision100: { minRing: 0, maxRing: 10, innerRadiusMM: 25, stepMM: 25, blackFromRing: 7, allBlack: false, hasInnenzehner: true }, // DSB SpO: Ordonnanz-/Scheibengewehr 100m, 25m Präzision, Freie Pistole 50m
+  praezision300: { minRing: 0, maxRing: 10, innerRadiusMM: 50, stepMM: 50, blackFromRing: 5, allBlack: false, hasInnenzehner: true }, // DSB SpO: Großkalibergewehr 300m
   duell25: { minRing: 5, maxRing: 10, innerRadiusMM: 50, stepMM: 40, blackFromRing: 5, allBlack: true, hasInnenzehner: false } // DSB SpO: 25m Duell, wie Olympische Schnellfeuerpistole
 };
 
@@ -735,32 +735,32 @@ function groupStats(shots, distance, discipline) {
 
 const AIM_DIRECTIONS = [
   { key: "12", angle: -90, label: "12 Uhr (hoch)" },
-  { key: "1-2", angle: -45, label: "1â€“2 Uhr (hoch rechts)" },
+  { key: "1-2", angle: -45, label: "1–2 Uhr (hoch rechts)" },
   { key: "3", angle: 0, label: "3 Uhr (rechts)" },
-  { key: "4-5", angle: 45, label: "4â€“5 Uhr (tief rechts)" },
+  { key: "4-5", angle: 45, label: "4–5 Uhr (tief rechts)" },
   { key: "6", angle: 90, label: "6 Uhr (tief)" },
-  { key: "7-8", angle: 135, label: "7â€“8 Uhr (tief links)" },
+  { key: "7-8", angle: 135, label: "7–8 Uhr (tief links)" },
   { key: "9", angle: 180, label: "9 Uhr (links)" },
-  { key: "10-11", angle: -135, label: "10â€“11 Uhr (hoch links)" }
+  { key: "10-11", angle: -135, label: "10–11 Uhr (hoch links)" }
 ];
 
 // Klassisches Trefferbild-Diagnoseschema. Rechts/Links bezieht sich auf die Abzugshand;
-// bei LinksschÃ¼tzen werden die seitlichen Ursachen gespiegelt (Punkt 3/9 und die Diagonalen).
+// bei Linksschützen werden die seitlichen Ursachen gespiegelt (Punkt 3/9 und die Diagonalen).
 const AIM_TIPS = {
-  "12": "Treffer liegen hoch. Meist zu fester Daumendruck oder eine inkonsistente Wangen-/Schulteranlage. Achte auf gleichbleibenden Anschlag und lass den Abzug am Ende sauber brechen, ohne nachzudrÃ¼cken.",
-  "6": "Treffer liegen tief â€“ typisch fÃ¼r Antizipation des Schusses (kurzes Abducken oder DrÃ¼cken kurz vor dem AuslÃ¶sen) oder einen durchgerissenen statt sauber gebrochenen Abzug. Konzentrier dich auf einen konstanten, Ã¼berraschenden Abzugsbruch und sauberes Durchhalten der Haltung nach dem Schuss (Nachhalten).",
-  "rechts_3": "Treffer liegen rechts â€“ oft zu wenig Abzugsfinger im Abzug (nur die Fingerspitze) oder seitlicher statt gerader Druck nach hinten. PrÃ¼fe die Fingerposition am Abzug.",
-  "links_3": "Treffer liegen rechts â€“ bei LinkshÃ¤ndern hÃ¤ufig zu viel Abzugsfinger im Abzug (zweites Fingerglied statt Spitze), wodurch der Lauf seitlich mitgezogen wird.",
-  "rechts_9": "Treffer liegen links â€“ hÃ¤ufig zu viel Abzugsfinger im Abzug (zweites Fingerglied statt Spitze), wodurch der Lauf seitlich mitgezogen wird.",
-  "links_9": "Treffer liegen links â€“ oft zu wenig Abzugsfinger im Abzug (nur die Fingerspitze) oder seitlicher statt gerader Druck nach hinten. PrÃ¼fe die Fingerposition am Abzug.",
-  "rechts_1-2": "Treffer liegen hoch rechts â€“ Kombination aus zu festem Daumendruck und zu wenig Abzugsfinger. Achte auf lockeren, gleichmÃ¤ÃŸigen Griff.",
-  "links_1-2": "Treffer liegen hoch rechts â€“ bei LinkshÃ¤ndern oft ein Nachfassen/Greifen wÃ¤hrend des Abzugswegs.",
-  "rechts_4-5": "Treffer liegen tief rechts â€“ meist eine Mischung aus Antizipation und seitlichem statt geradem Abzugsdruck.",
-  "links_4-5": "Treffer liegen tief rechts â€“ bei LinkshÃ¤ndern oft verkrampfter Griff mit zu viel seitlichem Fingerdruck.",
-  "rechts_7-8": "Treffer liegen tief links â€“ meist verkrampfter Griff mit zu viel seitlichem Fingerdruck.",
-  "links_7-8": "Treffer liegen tief links â€“ oft eine Mischung aus Antizipation und seitlichem statt geradem Abzugsdruck.",
-  "rechts_10-11": "Treffer liegen hoch links â€“ oft ein Nachfassen/Greifen wÃ¤hrend des Abzugswegs.",
-  "links_10-11": "Treffer liegen hoch links â€“ Kombination aus zu festem Daumendruck und zu wenig Abzugsfinger. Achte auf lockeren, gleichmÃ¤ÃŸigen Griff."
+  "12": "Treffer liegen hoch. Meist zu fester Daumendruck oder eine inkonsistente Wangen-/Schulteranlage. Achte auf gleichbleibenden Anschlag und lass den Abzug am Ende sauber brechen, ohne nachzudrücken.",
+  "6": "Treffer liegen tief – typisch für Antizipation des Schusses (kurzes Abducken oder Drücken kurz vor dem Auslösen) oder einen durchgerissenen statt sauber gebrochenen Abzug. Konzentrier dich auf einen konstanten, überraschenden Abzugsbruch und sauberes Durchhalten der Haltung nach dem Schuss (Nachhalten).",
+  "rechts_3": "Treffer liegen rechts – oft zu wenig Abzugsfinger im Abzug (nur die Fingerspitze) oder seitlicher statt gerader Druck nach hinten. Prüfe die Fingerposition am Abzug.",
+  "links_3": "Treffer liegen rechts – bei Linkshändern häufig zu viel Abzugsfinger im Abzug (zweites Fingerglied statt Spitze), wodurch der Lauf seitlich mitgezogen wird.",
+  "rechts_9": "Treffer liegen links – häufig zu viel Abzugsfinger im Abzug (zweites Fingerglied statt Spitze), wodurch der Lauf seitlich mitgezogen wird.",
+  "links_9": "Treffer liegen links – oft zu wenig Abzugsfinger im Abzug (nur die Fingerspitze) oder seitlicher statt gerader Druck nach hinten. Prüfe die Fingerposition am Abzug.",
+  "rechts_1-2": "Treffer liegen hoch rechts – Kombination aus zu festem Daumendruck und zu wenig Abzugsfinger. Achte auf lockeren, gleichmäßigen Griff.",
+  "links_1-2": "Treffer liegen hoch rechts – bei Linkshändern oft ein Nachfassen/Greifen während des Abzugswegs.",
+  "rechts_4-5": "Treffer liegen tief rechts – meist eine Mischung aus Antizipation und seitlichem statt geradem Abzugsdruck.",
+  "links_4-5": "Treffer liegen tief rechts – bei Linkshändern oft verkrampfter Griff mit zu viel seitlichem Fingerdruck.",
+  "rechts_7-8": "Treffer liegen tief links – meist verkrampfter Griff mit zu viel seitlichem Fingerdruck.",
+  "links_7-8": "Treffer liegen tief links – oft eine Mischung aus Antizipation und seitlichem statt geradem Abzugsdruck.",
+  "rechts_10-11": "Treffer liegen hoch links – oft ein Nachfassen/Greifen während des Abzugswegs.",
+  "links_10-11": "Treffer liegen hoch links – Kombination aus zu festem Daumendruck und zu wenig Abzugsfinger. Achte auf lockeren, gleichmäßigen Griff."
 };
 
 function aimTipFor(dirKey, hand) {
@@ -905,20 +905,20 @@ function renderNewView() {
     <div class="grid-2">
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">SCHIESSPLATZ</div>
-      <input type="text" id="range-input" value="${state.range.replace(/"/g,'&quot;')}" placeholder="z. B. SchÃ¼tzengilde zu JÃ¼terbog" />
+      <input type="text" id="range-input" value="${state.range.replace(/"/g,'&quot;')}" placeholder="z. B. Schützengilde zu Jüterbog" />
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid ${COLORS.cardBorder};">
-        ${state.weatherStatus === "loading" ? `<div style="font-size:13px;color:${COLORS.muted};">Lade Wetterdatenâ€¦</div>` : ""}
+        ${state.weatherStatus === "loading" ? `<div style="font-size:13px;color:${COLORS.muted};">Lade Wetterdaten…</div>` : ""}
         ${state.weatherStatus === "error" ? `
           <div style="font-size:13px;color:${COLORS.red};margin-bottom:8px;">${state.weatherError}</div>
           <div data-action="refresh-weather" style="display:inline-block;cursor:pointer;font-size:13px;text-decoration:underline;color:${COLORS.cream};">Erneut versuchen</div>
         ` : ""}
         ${state.weatherStatus === "done" && state.weather ? `
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-            <div style="font-size:11px;color:${COLORS.muted};">${state.weather.place} Â· ${new Date(state.weather.fetchedAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</div>
+            <div style="font-size:11px;color:${COLORS.muted};">${state.weather.place} · ${new Date(state.weather.fetchedAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</div>
             <div data-action="refresh-weather" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${COLORS.muted};">Aktualisieren</div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-            <div><div style="font-size:11px;color:${COLORS.muted};">TEMPERATUR</div><div class="mono" style="font-size:18px;font-weight:600;">${Math.round(state.weather.temperature)}Â°C</div></div>
+            <div><div style="font-size:11px;color:${COLORS.muted};">TEMPERATUR</div><div class="mono" style="font-size:18px;font-weight:600;">${Math.round(state.weather.temperature)}°C</div></div>
             <div><div style="font-size:11px;color:${COLORS.muted};">WIND</div><div class="mono" style="font-size:18px;font-weight:600;">${state.weather.windSpeed.toFixed(1)} m/s ${degToCompass(state.weather.windDirection)}</div></div>
             <div><div style="font-size:11px;color:${COLORS.muted};">LUFTFEUCHTE</div><div class="mono" style="font-size:18px;font-weight:600;">${Math.round(state.weather.humidity)}%</div></div>
             <div><div style="font-size:11px;color:${COLORS.muted};">LUFTDRUCK</div><div class="mono" style="font-size:18px;font-weight:600;">${Math.round(state.weather.pressure)} hPa</div></div>
@@ -932,7 +932,7 @@ function renderNewView() {
         <div style="font-size:11px;color:${COLORS.muted};letter-spacing:1px;">WAFFE</div>
         <span data-action="toggle-weapon-edit-mode" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${state.weaponEditMode ? COLORS.cream : COLORS.muted};">${state.weaponEditMode ? "Fertig" : "Bearbeiten"}</span>
       </div>
-      ${state.weaponEditMode ? `<div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;">Waffe antippen, um sie zu bearbeiten oder zu lÃ¶schen.</div>` : ""}
+      ${state.weaponEditMode ? `<div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;">Waffe antippen, um sie zu bearbeiten oder zu löschen.</div>` : ""}
       ${WEAPON_CATEGORIES.map(cat => {
         const catWeapons = WEAPONS.filter(w => weaponCategory(w) === cat.key);
         if (catWeapons.length === 0) return "";
@@ -940,7 +940,7 @@ function renderNewView() {
           <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;">${cat.label}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
             ${catWeapons.map(w => `
-              <div class="btn-tab" data-action="${state.weaponEditMode ? "start-edit-weapon" : "set-weapon"}" data-value="${w.name}" style="text-align:center;padding:9px 4px;font-size:12px;font-weight:600;border-radius:2px;line-height:1.15;background:${!state.weaponEditMode && state.weapon===w.name?COLORS.cream:'transparent'};color:${!state.weaponEditMode && state.weapon===w.name?COLORS.bg:COLORS.cream};border:1px ${state.weaponEditMode ? "dashed" : "solid"} ${!state.weaponEditMode && state.weapon===w.name?COLORS.cream:COLORS.cardBorder};">${state.weaponEditMode ? "âœŽ " : ""}${w.name}</div>
+              <div class="btn-tab" data-action="${state.weaponEditMode ? "start-edit-weapon" : "set-weapon"}" data-value="${w.name}" style="text-align:center;padding:9px 4px;font-size:12px;font-weight:600;border-radius:2px;line-height:1.15;background:${!state.weaponEditMode && state.weapon===w.name?COLORS.cream:'transparent'};color:${!state.weaponEditMode && state.weapon===w.name?COLORS.bg:COLORS.cream};border:1px ${state.weaponEditMode ? "dashed" : "solid"} ${!state.weaponEditMode && state.weapon===w.name?COLORS.cream:COLORS.cardBorder};">${state.weaponEditMode ? "✎ " : ""}${w.name}</div>
             `).join("")}
           </div>
         `;
@@ -960,7 +960,7 @@ function renderNewView() {
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <div>
                   <div style="font-size:10px;color:${COLORS.muted};">SCHUSS SEIT REINIGUNG</div>
-                  <div class="mono" style="font-size:16px;font-weight:600;color:${warn ? COLORS.red : COLORS.cream};">${shots}${warn ? " â€“ Zeit zum Reinigen" : ""}</div>
+                  <div class="mono" style="font-size:16px;font-weight:600;color:${warn ? COLORS.red : COLORS.cream};">${shots}${warn ? " – Zeit zum Reinigen" : ""}</div>
                   ${editingWeapon.lastCleanedDate ? `<div style="font-size:10px;color:${COLORS.muted};margin-top:2px;">Zuletzt gereinigt: ${formatDate(editingWeapon.lastCleanedDate)}</div>` : ""}
                 </div>
                 <div data-action="mark-weapon-cleaned" data-value="${editingWeapon.name}" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${COLORS.cream};white-space:nowrap;">Als gereinigt markieren</div>
@@ -982,16 +982,16 @@ function renderNewView() {
           ${editingWeapon ? (
             state.confirmDeleteWeapon === editingWeapon.name
               ? `<div style="margin-top:10px;padding:10px;background:${COLORS.bg};border:1px solid ${COLORS.red};border-radius:4px;">
-                  <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Waffe wirklich lÃ¶schen? Bereits gespeicherte Serien bleiben erhalten.</div>
+                  <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Waffe wirklich löschen? Bereits gespeicherte Serien bleiben erhalten.</div>
                   <div style="display:flex;gap:6px;">
-                    <div data-action="confirm-delete-weapon" data-value="${editingWeapon.name}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, lÃ¶schen</div>
+                    <div data-action="confirm-delete-weapon" data-value="${editingWeapon.name}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, löschen</div>
                     <div data-action="cancel-delete-weapon" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Abbrechen</div>
                   </div>
                 </div>`
-              : `<div data-action="delete-weapon" data-value="${editingWeapon.name}" style="cursor:pointer;text-align:center;margin-top:8px;font-size:12px;color:${COLORS.red};text-decoration:underline;">Waffe lÃ¶schen</div>`
+              : `<div data-action="delete-weapon" data-value="${editingWeapon.name}" style="cursor:pointer;text-align:center;margin-top:8px;font-size:12px;color:${COLORS.red};text-decoration:underline;">Waffe löschen</div>`
           ) : ""}
         </div>
-      `; })() : (!state.weaponEditMode ? `<div data-action="start-add-weapon" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;margin-bottom:14px;">+ Waffe hinzufÃ¼gen</div>` : "")}
+      `; })() : (!state.weaponEditMode ? `<div data-action="start-add-weapon" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;margin-bottom:14px;">+ Waffe hinzufügen</div>` : "")}
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">KALIBER</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:${state.addingCaliber ? '8px' : '14px'};">
         ${CALIBERS.map(c => `
@@ -1006,7 +1006,7 @@ function renderNewView() {
             <div class="btn-tab" data-action="cancel-add-caliber" style="flex:1;text-align:center;padding:8px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Abbrechen</div>
           </div>
         </div>
-      ` : `<div data-action="start-add-caliber" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;margin-bottom:14px;">+ Kaliber hinzufÃ¼gen</div>`}
+      ` : `<div data-action="start-add-caliber" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;margin-bottom:14px;">+ Kaliber hinzufügen</div>`}
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">MODUS</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         ${MODES.map(m => `
@@ -1026,7 +1026,7 @@ function renderNewView() {
       ` : ""}
       <div style="font-size:10px;color:${COLORS.muted};margin-bottom:6px;">DSB-DISZIPLIN</div>
       <select id="dsb-discipline-select">
-        <option value="">â€“ Disziplin wÃ¤hlen â€“</option>
+        <option value="">– Disziplin wählen –</option>
         ${Object.keys(DSB_DISCIPLINES).map(num => {
           const d = DSB_DISCIPLINES[num];
           const active = state.competitionPreset && state.competitionPreset.key === "dsb-" + num;
@@ -1037,22 +1037,22 @@ function renderNewView() {
     ` : ""}
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;letter-spacing:1px;">NOTIZ (OPTIONAL)</div>
-      <input type="text" id="note-input" value="${state.noteText.replace(/"/g,'&quot;')}" placeholder="z. B. neue Munition, starker Wind, mÃ¼deâ€¦" style="margin-bottom:10px;" />
+      <input type="text" id="note-input" value="${state.noteText.replace(/"/g,'&quot;')}" placeholder="z. B. neue Munition, starker Wind, müde…" style="margin-bottom:10px;" />
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;letter-spacing:1px;">LOSNUMMER / CHARGE (OPTIONAL)</div>
       <input type="text" id="lot-input" value="${state.lotNumber.replace(/"/g,'&quot;')}" placeholder="z. B. Los 2908-A" />
     </div>
     ${state.distance === 25 ? `
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
-      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">DISZIPLIN (25M) Â· SCHEIBE ANTIPPEN</div>
+      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">DISZIPLIN (25M) · SCHEIBE ANTIPPEN</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        ${[{key:"praezision",label:"PrÃ¤zision"},{key:"duell",label:"Duell"}].map(o => `
+        ${[{key:"praezision",label:"Präzision"},{key:"duell",label:"Duell"}].map(o => `
           <div data-action="set-discipline" data-value="${o.key}" style="cursor:pointer;text-align:center;padding:10px 8px;border-radius:4px;background:${COLORS.bg};border:2px solid ${state.discipline===o.key?COLORS.cream:COLORS.cardBorder};">
             ${targetSVG([], 25, { size: 96, discipline: o.key })}
             <div style="margin-top:8px;font-size:12px;font-weight:600;color:${state.discipline===o.key?COLORS.cream:COLORS.muted};">${o.label}</div>
           </div>
         `).join("")}
       </div>
-      <div style="font-size:11px;color:${COLORS.muted};margin-top:8px;">${state.discipline === "duell" ? "Duellscheibe: komplett schwarz, nur Ringe 5â€“10 (wie Olympische Schnellfeuerpistole)." : "PrÃ¤zisionsscheibe: wie 100m-Scheibe, Ringe 0â€“10, Spiegel ab Ring 7."}</div>
+      <div style="font-size:11px;color:${COLORS.muted};margin-top:8px;">${state.discipline === "duell" ? "Duellscheibe: komplett schwarz, nur Ringe 5–10 (wie Olympische Schnellfeuerpistole)." : "Präzisionsscheibe: wie 100m-Scheibe, Ringe 0–10, Spiegel ab Ring 7."}</div>
     </div>
     ` : ""}
     <div class="grid-2">
@@ -1067,11 +1067,11 @@ function renderNewView() {
       <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
         <div><div style="font-size:11px;color:${COLORS.muted};">SCHUSSZAHL</div><div class="mono" style="font-size:22px;font-weight:600;">${state.shots.length}${state.competitionPreset ? ` / ${state.competitionPreset.shots}` : ""}</div></div>
         <div><div style="font-size:11px;color:${COLORS.muted};">RINGZAHL</div><div class="mono" style="font-size:22px;font-weight:600;color:${distColor(state.distance)};">${currentSum}</div></div>
-        <div><div style="font-size:11px;color:${COLORS.muted};">SCHNITT</div><div class="mono" style="font-size:22px;font-weight:600;">${state.shots.length ? currentAvg.toFixed(1) : "â€“"}</div></div>
+        <div><div style="font-size:11px;color:${COLORS.muted};">SCHNITT</div><div class="mono" style="font-size:22px;font-weight:600;">${state.shots.length ? currentAvg.toFixed(1) : "–"}</div></div>
       </div>
       ${state.shots.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:10px;border-top:1px solid ${COLORS.cardBorder};">${state.shots.map((s,i) => chip(s, state.distance, i)).join("")}</div>` : ""}
       ${state.shots.length > 0 ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:8px;">Auf einen Treffer tippen, um ihn einzeln zu entfernen.</div>` : ""}
-      ${(() => { const g = groupStats(state.shots, state.distance, state.discipline); return g ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:8px;padding-top:8px;border-top:1px solid ${COLORS.cardBorder};">Streuung Â· ES ${g.extremeSpreadCm.toFixed(1)} cm (${g.extremeSpreadPct.toFixed(1)}%) Â· MR ${g.meanRadiusCm.toFixed(1)} cm (${g.meanRadiusPct.toFixed(1)}%)</div>` : ""; })()}
+      ${(() => { const g = groupStats(state.shots, state.distance, state.discipline); return g ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:8px;padding-top:8px;border-top:1px solid ${COLORS.cardBorder};">Streuung · ES ${g.extremeSpreadCm.toFixed(1)} cm (${g.extremeSpreadPct.toFixed(1)}%) · MR ${g.meanRadiusCm.toFixed(1)} cm (${g.meanRadiusPct.toFixed(1)}%)</div>` : ""; })()}
     </div>
     ${state.shots.length >= 3 ? (() => {
       const diag = diagnoseAim(state.shots, state.distance, state.discipline, state.shooterHand);
@@ -1087,7 +1087,7 @@ function renderNewView() {
           </div>
         </div>
         ${diag.centered
-          ? `<div style="font-size:13px;color:${COLORS.cream};">Deine Treffer streuen zentriert um den Zielpunkt (Versatz ${diag.offsetPct.toFixed(0)}%) â€“ kein systematischer Fehler erkennbar. Fokus jetzt auf eine engere Streuung statt Korrektur.</div>`
+          ? `<div style="font-size:13px;color:${COLORS.cream};">Deine Treffer streuen zentriert um den Zielpunkt (Versatz ${diag.offsetPct.toFixed(0)}%) – kein systematischer Fehler erkennbar. Fokus jetzt auf eine engere Streuung statt Korrektur.</div>`
           : `<div style="font-size:13px;font-weight:600;color:${COLORS.cream};margin-bottom:4px;">Schwerpunkt: ${diag.direction.label}</div>
              <div style="font-size:13px;color:${COLORS.cream};line-height:1.4;">${diag.tip}</div>`
         }
@@ -1101,10 +1101,10 @@ function renderNewView() {
       ${RINGS.map(r => `<div class="ring-btn mono" data-action="add-shot" data-value="${r}" style="text-align:center;padding:16px 0;font-size:20px;font-weight:700;border-radius:4px;background:${r>=9?distColor(state.distance):COLORS.card};color:${r>=9?'#141510':COLORS.cream};border:1px solid ${r>=9?distColor(state.distance):COLORS.cardBorder};">${r}</div>`).join("")}
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button data-action="undo-shot" ${state.shots.length===0?"disabled":""} style="flex:1;background:transparent;border:1px solid ${COLORS.cardBorder};color:${state.shots.length===0?COLORS.muted:COLORS.cream};border-radius:4px;padding:10px 0;font-size:14px;">Letzten lÃ¶schen</button>
+      <button data-action="undo-shot" ${state.shots.length===0?"disabled":""} style="flex:1;background:transparent;border:1px solid ${COLORS.cardBorder};color:${state.shots.length===0?COLORS.muted:COLORS.cream};border-radius:4px;padding:10px 0;font-size:14px;">Letzten löschen</button>
       <button data-action="clear-shots" ${state.shots.length===0?"disabled":""} style="flex:1;background:transparent;border:1px solid ${COLORS.cardBorder};color:${state.shots.length===0?COLORS.muted:COLORS.cream};border-radius:4px;padding:10px 0;font-size:14px;">Serie leeren</button>
     </div>
-    <button data-action="save-series" style="width:100%;background:${state.savedFlash?COLORS.green:COLORS.cream};color:${COLORS.bg};border:none;border-radius:4px;padding:13px 0;font-size:16px;font-weight:700;">${state.savedFlash ? "Gespeichert" : (state.editingId ? "Ã„nderungen speichern" : "Serie speichern")}</button>
+    <button data-action="save-series" style="width:100%;background:${state.savedFlash?COLORS.green:COLORS.cream};color:${COLORS.bg};border:none;border-radius:4px;padding:13px 0;font-size:16px;font-weight:700;">${state.savedFlash ? "Gespeichert" : (state.editingId ? "Änderungen speichern" : "Serie speichern")}</button>
     ${state.saveError ? `<div style="color:${COLORS.red};font-size:13px;margin-top:8px;">${state.saveError}</div>` : ""}
   `;
 }
@@ -1115,7 +1115,7 @@ function trajectoryFromFunctions(vFn, tFn, sightHeightCm, zeroM, maxDistM) {
   const dropAtZero = x => { const tt = tFn(x); return 0.5 * g * tt * tt; };
   const dropAtZeroVal = dropAtZero(zeroM);
   const theta = (h + dropAtZeroVal) / zeroM;
-  const y = x => (-h + x * theta - dropAtZero(x)) * 100; // cm relativ zur Ziellinie, positiv = Ã¼ber der Linie
+  const y = x => (-h + x * theta - dropAtZero(x)) * 100; // cm relativ zur Ziellinie, positiv = über der Linie
   const steps = 60;
   const points = [];
   for (let i = 0; i <= steps; i++) {
@@ -1134,18 +1134,18 @@ function windDriftCm(windSpeedMs, windClockHour, timeOfFlightS) {
 function ballisticTrajectory(v0, bc, sightHeightCm, zeroM, maxDistM) {
   const g = 9.81;
   const Z = 2000; // Tuning-Konstante des vereinfachten Modells, grob an .308-Referenztabellen kalibriert
-  const decayLen = Math.max(1, bc * Z); // "AbklinglÃ¤nge" der Geschwindigkeit in Metern
+  const decayLen = Math.max(1, bc * Z); // "Abklinglänge" der Geschwindigkeit in Metern
   const v = x => v0 * Math.exp(-x / decayLen);
   const t = x => (decayLen / v0) * (Math.exp(x / decayLen) - 1);
   return trajectoryFromFunctions(v, t, sightHeightCm, zeroM, maxDistM);
 }
 
 function airDensityRatio(tempC, pressureHPa) {
-  const R = 287.05; // spez. Gaskonstante trockene Luft, J/(kgÂ·K)
+  const R = 287.05; // spez. Gaskonstante trockene Luft, J/(kg·K)
   const T = tempC + 273.15;
   const P = pressureHPa * 100; // hPa -> Pa
   const rho = P / (R * T);
-  const rho0 = 101325 / (R * 288.15); // ICAO-StandardatmosphÃ¤re: 15Â°C, 1013,25 hPa auf MeereshÃ¶he
+  const rho0 = 101325 / (R * 288.15); // ICAO-Standardatmosphäre: 15°C, 1013,25 hPa auf Meereshöhe
   return rho / rho0;
 }
 
@@ -1156,7 +1156,7 @@ function ballisticTrajectoryFromTable(vTable, sightHeightCm, zeroM, maxDistM, de
   const vs = [vTable.v0, vTable.v100, vTable.v200, vTable.v300];
   const lastSlope = (vs[3] - vs[2]) / (xs[3] - xs[2]);
 
-  // vTableAt/tTableAt arbeiten auf der unverÃ¤nderten Herstellertabelle (Standardbedingungen)
+  // vTableAt/tTableAt arbeiten auf der unveränderten Herstellertabelle (Standardbedingungen)
   function vTableAt(x) {
     if (x <= 300) {
       for (let i = 0; i < 3; i++) {
@@ -1167,7 +1167,7 @@ function ballisticTrajectoryFromTable(vTable, sightHeightCm, zeroM, maxDistM, de
       }
       return vs[0];
     }
-    return Math.max(50, vs[3] + lastSlope * (x - 300)); // lineare Extrapolation Ã¼ber 300m hinaus, nach unten begrenzt
+    return Math.max(50, vs[3] + lastSlope * (x - 300)); // lineare Extrapolation über 300m hinaus, nach unten begrenzt
   }
 
   function segTime(x1, x2, v1, v2) {
@@ -1194,10 +1194,10 @@ function ballisticTrajectoryFromTable(vTable, sightHeightCm, zeroM, maxDistM, de
     return t;
   }
 
-  // Standortkorrektur: hÃ¶here Luftdichte am SchieÃŸplatz -> stÃ¤rkerer Widerstand -> gleicher
-  // Geschwindigkeitsverlust wird schon bei kÃ¼rzerer physischer Distanz erreicht (und umgekehrt bei
-  // dÃ¼nnerer Luft, z. B. in grÃ¶ÃŸerer HÃ¶he). Umsetzung Ã¼ber eine "effektive Distanz" x*DichteverhÃ¤ltnis
-  // fÃ¼r die Tabellen-Lookups, mit entsprechender Reskalierung der Flugzeit.
+  // Standortkorrektur: höhere Luftdichte am Schießplatz -> stärkerer Widerstand -> gleicher
+  // Geschwindigkeitsverlust wird schon bei kürzerer physischer Distanz erreicht (und umgekehrt bei
+  // dünnerer Luft, z. B. in größerer Höhe). Umsetzung über eine "effektive Distanz" x*Dichteverhältnis
+  // für die Tabellen-Lookups, mit entsprechender Reskalierung der Flugzeit.
   const vAt = x => vTableAt(x * densityRatio);
   const tAt = x => tTableAt(x * densityRatio) / densityRatio;
   return trajectoryFromFunctions(vAt, tAt, sightHeightCm, zeroM, maxDistM);
@@ -1299,7 +1299,7 @@ function velocityChart(points) {
     yGrid += `<text x="${padL-2}" y="${gy+1}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${v}</text>`;
   }
   return `
-    <svg viewBox="0 0 ${w} ${h}" style="width:100%;display:block;aspect-ratio:${w}/${h};" role="img" aria-label="Geschwindigkeit Ã¼ber Distanz">
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;display:block;aspect-ratio:${w}/${h};" role="img" aria-label="Geschwindigkeit über Distanz">
       ${yGrid}
       ${xGrid}
       <polyline points="${path}" fill="none" stroke="${COLORS.steel}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
@@ -1436,8 +1436,8 @@ function renderBallisticsView() {
         ${hasWeather ? `<span data-action="toggle-ballistic-weather" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${state.ballisticUseWeather !== false ? COLORS.cream : COLORS.muted};">${state.ballisticUseWeather !== false ? "An" : "Aus"}</span>` : ""}
       </div>
       ${hasWeather
-        ? `<div style="font-size:12px;color:${COLORS.cream};margin-top:4px;">${state.range || "SchieÃŸplatz"} Â· ${Math.round(state.weather.temperature)}Â°C, ${Math.round(state.weather.pressure)} hPa â†’ Luftdichte ${(densityRatio*100).toFixed(0)}% ggÃ¼. StandardatmosphÃ¤re</div>`
-        : `<div style="font-size:12px;color:${COLORS.muted};margin-top:4px;">Keine Wetterdaten fÃ¼r den SchieÃŸplatz vorhanden â€“ es wird mit StandardatmosphÃ¤re (15Â°C, 1013 hPa) gerechnet. Wetterdaten lassen sich unter â€žNeue Serie" beim SchieÃŸplatz abrufen.</div>`
+        ? `<div style="font-size:12px;color:${COLORS.cream};margin-top:4px;">${state.range || "Schießplatz"} · ${Math.round(state.weather.temperature)}°C, ${Math.round(state.weather.pressure)} hPa → Luftdichte ${(densityRatio*100).toFixed(0)}% ggü. Standardatmosphäre</div>`
+        : `<div style="font-size:12px;color:${COLORS.muted};margin-top:4px;">Keine Wetterdaten für den Schießplatz vorhanden – es wird mit Standardatmosphäre (15°C, 1013 hPa) gerechnet. Wetterdaten lassen sich unter „Neue Serie" beim Schießplatz abrufen.</div>`
       }
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px 14px;margin-bottom:16px;">
@@ -1477,12 +1477,12 @@ function renderBallisticsView() {
         <div style="font-size:11px;color:${COLORS.muted};letter-spacing:1px;">MUNITION</div>
         <span data-action="toggle-ammo-edit-mode" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${state.ammoEditMode ? COLORS.cream : COLORS.muted};">${state.ammoEditMode ? "Fertig" : "Bearbeiten"}</span>
       </div>
-      ${state.ammoEditMode ? `<div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;">Munition antippen, um sie zu bearbeiten oder zu lÃ¶schen.</div>` : ""}
+      ${state.ammoEditMode ? `<div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;">Munition antippen, um sie zu bearbeiten oder zu löschen.</div>` : ""}
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:${state.addingAmmo ? "8px" : "12px"};">
         ${AMMO.map(a => `
           <div class="btn-tab" data-action="${state.ammoEditMode ? "start-edit-ammo" : "set-ballistic-ammo"}" data-value="${a.name}" style="cursor:pointer;padding:9px 10px;border-radius:2px;background:${!state.ammoEditMode && ammo.name===a.name?COLORS.cream:'transparent'};border:1px ${state.ammoEditMode ? "dashed" : "solid"} ${!state.ammoEditMode && ammo.name===a.name?COLORS.cream:COLORS.cardBorder};">
-            <div style="font-size:12px;font-weight:600;color:${!state.ammoEditMode && ammo.name===a.name?COLORS.bg:COLORS.cream};">${state.ammoEditMode ? "âœŽ " : ""}${a.name}</div>
-            <div class="mono" style="font-size:10px;color:${!state.ammoEditMode && ammo.name===a.name?COLORS.bg:COLORS.muted};">${a.caliber} Â· V0 ${a.v0} m/s</div>
+            <div style="font-size:12px;font-weight:600;color:${!state.ammoEditMode && ammo.name===a.name?COLORS.bg:COLORS.cream};">${state.ammoEditMode ? "✎ " : ""}${a.name}</div>
+            <div class="mono" style="font-size:10px;color:${!state.ammoEditMode && ammo.name===a.name?COLORS.bg:COLORS.muted};">${a.caliber} · V0 ${a.v0} m/s</div>
           </div>
         `).join("")}
       </div>
@@ -1505,7 +1505,7 @@ function renderBallisticsView() {
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V100 (m/s)</div><input type="text" inputmode="numeric" id="new-ammo-v100" value="${editingAmmo ? editingAmmo.v100 : ""}" /></div>
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V200 (m/s)</div><input type="text" inputmode="numeric" id="new-ammo-v200" value="${editingAmmo ? editingAmmo.v200 : ""}" /></div>
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V300 (m/s)</div><input type="text" inputmode="numeric" id="new-ammo-v300" value="${editingAmmo ? editingAmmo.v300 : ""}" /></div>
-            <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">VisierhÃ¶he (cm)</div><input type="text" inputmode="decimal" id="new-ammo-sightheight" value="${editingAmmo ? editingAmmo.sightHeight : "4.5"}" /></div>
+            <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Visierhöhe (cm)</div><input type="text" inputmode="decimal" id="new-ammo-sightheight" value="${editingAmmo ? editingAmmo.sightHeight : "4.5"}" /></div>
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Nullpunkt (m)</div><input type="text" inputmode="numeric" id="new-ammo-zero" value="${editingAmmo ? editingAmmo.zero : "100"}" /></div>
           </div>
           <div style="display:flex;gap:6px;">
@@ -1515,19 +1515,19 @@ function renderBallisticsView() {
           ${editingAmmo ? (
             state.confirmDeleteAmmo === editingAmmo.name
               ? `<div style="margin-top:10px;padding:10px;background:${COLORS.card};border:1px solid ${COLORS.red};border-radius:4px;">
-                  <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Munition wirklich lÃ¶schen?</div>
+                  <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Munition wirklich löschen?</div>
                   <div style="display:flex;gap:6px;">
-                    <div data-action="confirm-delete-ammo" data-value="${editingAmmo.name}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, lÃ¶schen</div>
+                    <div data-action="confirm-delete-ammo" data-value="${editingAmmo.name}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, löschen</div>
                     <div data-action="cancel-delete-ammo" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Abbrechen</div>
                   </div>
                 </div>`
-              : `<div data-action="delete-ammo" data-value="${editingAmmo.name}" style="cursor:pointer;text-align:center;margin-top:8px;font-size:12px;color:${COLORS.red};text-decoration:underline;">Munition lÃ¶schen</div>`
+              : `<div data-action="delete-ammo" data-value="${editingAmmo.name}" style="cursor:pointer;text-align:center;margin-top:8px;font-size:12px;color:${COLORS.red};text-decoration:underline;">Munition löschen</div>`
           ) : ""}
         </div>
-      `; })() : (!state.ammoEditMode ? `<div data-action="start-add-ammo" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;">+ Munition hinzufÃ¼gen</div>` : "")}
+      `; })() : (!state.ammoEditMode ? `<div data-action="start-add-ammo" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;">+ Munition hinzufügen</div>` : "")}
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
-      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:10px;letter-spacing:1px;">PARAMETER Â· HERSTELLERDATEN</div>
+      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:10px;letter-spacing:1px;">PARAMETER · HERSTELLERDATEN</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
           <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V0 (m/s)</div>
@@ -1546,7 +1546,7 @@ function renderBallisticsView() {
           <input type="text" inputmode="numeric" id="ballistic-vt300" value="${vT300}" />
         </div>
         <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">VisierhÃ¶he (cm)</div>
+          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Visierhöhe (cm)</div>
           <input type="text" inputmode="decimal" id="ballistic-sightheight" value="${sightHeight}" />
         </div>
         <div>
@@ -1558,7 +1558,7 @@ function renderBallisticsView() {
           <input type="text" inputmode="numeric" id="ballistic-maxdist" value="${maxDist}" />
         </div>
       </div>
-      <div data-action="reset-ballistic-params" style="cursor:pointer;font-size:11px;color:${COLORS.muted};text-decoration:underline;margin-top:10px;">Auf Kaliber-Standardwerte zurÃ¼cksetzen</div>
+      <div data-action="reset-ballistic-params" style="cursor:pointer;font-size:11px;color:${COLORS.muted};text-decoration:underline;margin-top:10px;">Auf Kaliber-Standardwerte zurücksetzen</div>
     </div>
     </div>
     <div class="grid-2">
@@ -1567,7 +1567,7 @@ function renderBallisticsView() {
       ${trajectoryChart(points, zero, maxDist)}
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px 8px 8px;margin-bottom:16px;">
-      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">GESCHWINDIGKEIT ÃœBER DISTANZ</div>
+      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">GESCHWINDIGKEIT ÜBER DISTANZ</div>
       ${velocityChart(points)}
     </div>
     </div>
@@ -1582,7 +1582,7 @@ function renderBallisticsView() {
         </div>
       </div>
       ${reticleSVG(state.reticleType, targetResult.mrad >= 0.05 ? [targetResult] : [])}
-      <div style="font-size:10px;color:${COLORS.muted};margin-top:8px;text-align:center;">Haltepunkte unterhalb des Zentrums â€“ dort halten, um den Fallwert auf der jeweiligen Distanz auszugleichen.</div>
+      <div style="font-size:10px;color:${COLORS.muted};margin-top:8px;text-align:center;">Haltepunkte unterhalb des Zentrums – dort halten, um den Fallwert auf der jeweiligen Distanz auszugleichen.</div>
     </div>
     <div>
     <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">WERTE JE DISTANZ</div>
@@ -1592,17 +1592,17 @@ function renderBallisticsView() {
           <div class="mono" style="font-size:13px;font-weight:600;">${r.d} m</div>
           <div style="display:flex;gap:16px;">
             <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">TREFFPUNKT</div><div class="mono" style="font-size:13px;">${r.y >= 0 ? "+" : ""}${r.y.toFixed(1)} cm</div></div>
-            <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">HALTEPUNKT</div><div class="mono" style="font-size:13px;color:${COLORS.brass};">${r.mrad < 0.05 ? "â€“" : r.mrad.toFixed(2) + " mil " + (r.y < 0 ? "hoch" : "tief")}</div></div>
+            <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">HALTEPUNKT</div><div class="mono" style="font-size:13px;color:${COLORS.brass};">${r.mrad < 0.05 ? "–" : r.mrad.toFixed(2) + " mil " + (r.y < 0 ? "hoch" : "tief")}</div></div>
             <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">V</div><div class="mono" style="font-size:13px;">${Math.round(r.v)} m/s</div></div>
           </div>
         </div>
       `).join("")}
     </div>
-    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:16px;">Auf eine Zeile tippen wÃ¤hlt sie auch als Zielentfernung.</div>
+    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:16px;">Auf eine Zeile tippen wählt sie auch als Zielentfernung.</div>
     </div>
     </div>
-    <div style="font-size:11px;color:${COLORS.muted};line-height:1.5;margin-bottom:8px;">Haltepunkt in Mil (MRAD): â€žhoch" = Ã¼ber den Zielpunkt halten (Geschoss liegt tiefer als die Ziellinie), â€žtief" = unter den Zielpunkt halten (Geschoss liegt noch Ã¼ber der Ziellinie, typischerweise vor dem Nullpunkt). Nur HÃ¶henkorrektur, kein Windabzug.</div>
-    <div style="font-size:11px;color:${COLORS.muted};line-height:1.5;">Vereinfachtes Modell (Punktmasse, exponentieller Geschwindigkeitsabfall Ã¼ber den ballistischen Koeffizienten, StandardatmosphÃ¤re, kein Wind). Dient der Veranschaulichung von Flugbahn und Geschwindigkeitsverlauf â€“ ersetzt keine chronographisch validierte Ballistik-Software und keine reale EinschieÃŸprozedur.</div>
+    <div style="font-size:11px;color:${COLORS.muted};line-height:1.5;margin-bottom:8px;">Haltepunkt in Mil (MRAD): „hoch" = über den Zielpunkt halten (Geschoss liegt tiefer als die Ziellinie), „tief" = unter den Zielpunkt halten (Geschoss liegt noch über der Ziellinie, typischerweise vor dem Nullpunkt). Nur Höhenkorrektur, kein Windabzug.</div>
+    <div style="font-size:11px;color:${COLORS.muted};line-height:1.5;">Vereinfachtes Modell (Punktmasse, exponentieller Geschwindigkeitsabfall über den ballistischen Koeffizienten, Standardatmosphäre, kein Wind). Dient der Veranschaulichung von Flugbahn und Geschwindigkeitsverlauf – ersetzt keine chronographisch validierte Ballistik-Software und keine reale Einschießprozedur.</div>
   `;
 }
 
@@ -1668,19 +1668,19 @@ function renderStatsView() {
 
   let body = "";
   if (summary.count === 0) {
-    body = `<div style="color:${COLORS.muted};font-size:14px;padding:24px 0;text-align:center;">Noch keine Serien fÃ¼r diese Auswahl. Erfasse zuerst eine Serie.</div>`;
+    body = `<div style="color:${COLORS.muted};font-size:14px;padding:24px 0;text-align:center;">Noch keine Serien für diese Auswahl. Erfasse zuerst eine Serie.</div>`;
   } else {
     body = `
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">GESAMT</div>
       <div class="stats-summary-grid">
         <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">SERIEN</div><div class="mono" style="font-size:24px;font-weight:600;">${summary.count}</div></div>
-        <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">Ã˜ RINGE / SCHUSS</div><div class="mono" style="font-size:24px;font-weight:600;">${summary.avg.toFixed(2)}</div></div>
+        <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">Ø RINGE / SCHUSS</div><div class="mono" style="font-size:24px;font-weight:600;">${summary.avg.toFixed(2)}</div></div>
         <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">BESTE SERIE</div><div class="mono" style="font-size:18px;font-weight:600;color:${COLORS.brass};">${summary.best.sum} (${summary.best.distance}m, ${formatDate(summary.best.date)})</div></div>
-        <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">SCHWÃ„CHSTE SERIE</div><div class="mono" style="font-size:18px;font-weight:600;color:${COLORS.muted};">${summary.worst.sum} (${summary.worst.distance}m, ${formatDate(summary.worst.date)})</div></div>
+        <div style="background:${COLORS.card};border-radius:4px;padding:12px;"><div style="font-size:11px;color:${COLORS.muted};">SCHWÄCHSTE SERIE</div><div class="mono" style="font-size:18px;font-weight:600;color:${COLORS.muted};">${summary.worst.sum} (${summary.worst.distance}m, ${formatDate(summary.worst.date)})</div></div>
       </div>
       ${chartData.length > 1 ? `
         <div style="background:${COLORS.card};border-radius:4px;padding:12px 8px 4px;margin-bottom:16px;">
-          <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">ENTWICKLUNG Ã˜ RINGE JE SERIE</div>
+          <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">ENTWICKLUNG Ø RINGE JE SERIE</div>
           ${lineChart(chartData, summary.avg)}
         </div>` : ""}
       ${competitionResults.length > 0 ? `
@@ -1694,7 +1694,7 @@ function renderStatsView() {
             </div>
             <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;">${r.weapon}</div>
             <div style="display:flex;gap:20px;align-items:baseline;">
-              <div><div style="font-size:10px;color:${COLORS.muted};">PRÃ„ZISION</div><div class="mono" style="font-size:14px;">${r.praezisionSum}</div></div>
+              <div><div style="font-size:10px;color:${COLORS.muted};">PRÄZISION</div><div class="mono" style="font-size:14px;">${r.praezisionSum}</div></div>
               <div><div style="font-size:10px;color:${COLORS.muted};">DUELL</div><div class="mono" style="font-size:14px;">${r.duellSum}</div></div>
               <div><div style="font-size:10px;color:${COLORS.muted};">GESAMT (${r.totalShots} Schuss)</div><div class="mono" style="font-size:18px;font-weight:700;color:${COLORS.brass};">${r.totalSum}</div></div>
             </div>
@@ -1720,7 +1720,7 @@ function renderStatsView() {
       ${windCorr ? `
       <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
         <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;letter-spacing:1px;">WETTER-KORRELATION</div>
-        <div style="font-size:13px;color:${COLORS.cream};line-height:1.5;">Bei Ã¼ber ${windCorr.threshold} m/s Wind liegt dein Schnitt bei ${windCorr.avgWindy.toFixed(2)} Ringen (${windCorr.windyCount} Serien), bei ruhigerem Wetter bei ${windCorr.avgCalm.toFixed(2)} (${windCorr.calmCount} Serien) â€“ ${windCorr.diff > 0 ? "ein Unterschied von " + windCorr.diff.toFixed(2) + " Ringen." : "kaum ein Unterschied."}</div>
+        <div style="font-size:13px;color:${COLORS.cream};line-height:1.5;">Bei über ${windCorr.threshold} m/s Wind liegt dein Schnitt bei ${windCorr.avgWindy.toFixed(2)} Ringen (${windCorr.windyCount} Serien), bei ruhigerem Wetter bei ${windCorr.avgCalm.toFixed(2)} (${windCorr.calmCount} Serien) – ${windCorr.diff > 0 ? "ein Unterschied von " + windCorr.diff.toFixed(2) + " Ringen." : "kaum ein Unterschied."}</div>
       </div>` : ""}
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">TAGESSTATISTIK</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
@@ -1729,8 +1729,8 @@ function renderStatsView() {
             <div style="font-size:13px;">${formatDate(d.date)}</div>
             <div style="display:flex;gap:16px;align-items:center;">
               <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">SERIEN</div><div class="mono" style="font-size:15px;font-weight:600;">${d.count}</div></div>
-              <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">SCHÃœSSE</div><div class="mono" style="font-size:15px;font-weight:600;">${d.totalShots}</div></div>
-              <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">Ã˜</div><div class="mono" style="font-size:15px;font-weight:600;">${d.avg.toFixed(1)}</div></div>
+              <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">SCHÜSSE</div><div class="mono" style="font-size:15px;font-weight:600;">${d.totalShots}</div></div>
+              <div style="text-align:right;"><div style="font-size:10px;color:${COLORS.muted};">Ø</div><div class="mono" style="font-size:15px;font-weight:600;">${d.avg.toFixed(1)}</div></div>
             </div>
           </div>
         `).join("")}
@@ -1741,39 +1741,50 @@ function renderStatsView() {
           <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:10px 12px;">
             <div data-action="toggle-target" data-value="${s.id}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
               <div>
-                <div style="font-size:13px;">${formatDate(s.date)} <span style="color:${distColor(s.distance)};font-weight:600;">Â· ${s.distance}m${s.distance === 25 ? " Â· " + (s.discipline === "duell" ? "Duell" : "PrÃ¤zision") : ""}</span></div>
+                <div style="font-size:13px;">${formatDate(s.date)} <span style="color:${distColor(s.distance)};font-weight:600;">· ${s.distance}m${s.distance === 25 ? " · " + (s.discipline === "duell" ? "Duell" : "Präzision") : ""}</span></div>
                 <div class="mono" style="font-size:11px;color:${COLORS.muted};">${s.shots.map(shotRing).join(" ")}</div>
-                ${s.weapon ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">${s.weapon} Â· ${s.caliber}${s.mode ? " Â· " + (MODES.find(m=>m.key===s.mode) ? MODES.find(m=>m.key===s.mode).label : s.mode) : ""}</div>` : ""}
-                ${s.range ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">${s.range}${s.weather ? " Â· " + Math.round(s.weather.temperature) + "Â°C, " + s.weather.windSpeed.toFixed(1) + " m/s " + degToCompass(s.weather.windDirection) : ""}</div>` : ""}
+                ${s.weapon ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">${s.weapon} · ${s.caliber}${s.mode ? " · " + (MODES.find(m=>m.key===s.mode) ? MODES.find(m=>m.key===s.mode).label : s.mode) : ""}</div>` : ""}
+                ${s.range ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">${s.range}${s.weather ? " · " + Math.round(s.weather.temperature) + "°C, " + s.weather.windSpeed.toFixed(1) + " m/s " + degToCompass(s.weather.windDirection) : ""}</div>` : ""}
                 ${s.presetName ? `<div style="font-size:11px;color:${COLORS.brass};margin-top:2px;">${s.presetName}</div>` : ""}
                 ${s.lotNumber ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">Los: ${s.lotNumber}</div>` : ""}
-                ${s.notes ? `<div style="font-size:11px;color:${COLORS.cream};margin-top:2px;font-style:italic;">â€ž${s.notes}"</div>` : ""}
-                ${(() => { const g = groupStats(s.shots, s.distance, s.discipline); return g ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">ES ${g.extremeSpreadCm.toFixed(1)} cm (${g.extremeSpreadPct.toFixed(1)}%) Â· MR ${g.meanRadiusCm.toFixed(1)} cm (${g.meanRadiusPct.toFixed(1)}%)</div>` : ""; })()}
+                ${s.notes ? `<div style="font-size:11px;color:${COLORS.cream};margin-top:2px;font-style:italic;">„${s.notes}"</div>` : ""}
+                ${(() => { const g = groupStats(s.shots, s.distance, s.discipline); return g ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">ES ${g.extremeSpreadCm.toFixed(1)} cm (${g.extremeSpreadPct.toFixed(1)}%) · MR ${g.meanRadiusCm.toFixed(1)} cm (${g.meanRadiusPct.toFixed(1)}%)</div>` : ""; })()}
               </div>
               <div style="display:flex;align-items:center;gap:10px;">
                 <div style="text-align:right;">
                   <div class="mono" style="font-size:18px;font-weight:600;">${s.sum}</div>
-                  <div style="font-size:11px;color:${COLORS.muted};">Ã˜ ${s.avg.toFixed(1)}</div>
+                  <div style="font-size:11px;color:${COLORS.muted};">Ø ${s.avg.toFixed(1)}</div>
                 </div>
                 <div data-action="print-session" data-value="${s.id}" role="button" aria-label="Ergebniszettel drucken" style="cursor:pointer;color:${COLORS.muted};font-size:13px;text-decoration:underline;">Zettel</div>
                 <div data-action="edit-session" data-value="${s.id}" role="button" aria-label="Serie bearbeiten" style="cursor:pointer;color:${COLORS.muted};font-size:13px;text-decoration:underline;">Bearb.</div>
-                <div data-action="delete-session" data-value="${s.id}" role="button" aria-label="Serie lÃ¶schen" style="cursor:pointer;color:${COLORS.muted};font-size:18px;padding:4px 6px;line-height:1;">Ã—</div>
+                <div data-action="delete-session" data-value="${s.id}" role="button" aria-label="Serie löschen" style="cursor:pointer;color:${COLORS.muted};font-size:18px;padding:4px 6px;line-height:1;">×</div>
               </div>
             </div>
             ${state.confirmDeleteSessionId === s.id ? `
               <div style="margin-top:10px;padding:10px;background:${COLORS.bg};border:1px solid ${COLORS.red};border-radius:4px;">
-                <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Serie wirklich lÃ¶schen? Das kann nicht rÃ¼ckgÃ¤ngig gemacht werden.</div>
+                <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Diese Serie wirklich löschen? Das kann nicht rückgängig gemacht werden.</div>
                 <div style="display:flex;gap:6px;">
-                  <div data-action="confirm-delete-session" data-value="${s.id}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, lÃ¶schen</div>
+                  <div data-action="confirm-delete-session" data-value="${s.id}" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, löschen</div>
                   <div data-action="cancel-delete-session" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Abbrechen</div>
                 </div>
               </div>
             ` : ""}
-            ${state.expandedSessionId === s.id ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid ${COLORS.cardBorder};max-width:200px;margin-left:auto;margin-right:auto;">${targetSVG(s.shots, s.distance, { size: 200, discipline: s.discipline })}</div>` : ""}
+            ${state.expandedSessionId === s.id ? (() => {
+              const partner = s.competitionGroupId ? state.sessions.find(x => x.competitionGroupId === s.competitionGroupId && x.id !== s.id) : null;
+              const targetsToShow = partner ? [s, partner].sort((a,b) => a.discipline === "praezision" ? -1 : 1) : [s];
+              return `<div style="margin-top:12px;padding-top:12px;border-top:1px solid ${COLORS.cardBorder};display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                ${targetsToShow.map(t => `
+                  <div style="max-width:200px;">
+                    ${t.competitionGroupId ? `<div style="text-align:center;font-size:11px;color:${COLORS.muted};margin-bottom:4px;text-transform:capitalize;">${t.discipline || ""}</div>` : ""}
+                    ${targetSVG(t.shots, t.distance, { size: 200, discipline: t.discipline })}
+                  </div>
+                `).join("")}
+              </div>`;
+            })() : ""}
             ${state.expandedSessionId === s.id ? (() => {
               const diag = diagnoseAim(s.shots, s.distance, s.discipline, state.shooterHand);
               if (!diag) return "";
-              return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.cream};line-height:1.4;">${diag.centered ? "Zentriert um den Zielpunkt (Versatz " + diag.offsetPct.toFixed(0) + "%) â€“ kein systematischer Fehler erkennbar." : "<strong>" + diag.direction.label + "</strong>: " + diag.tip}</div>`;
+              return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.cream};line-height:1.4;">${diag.centered ? "Zentriert um den Zielpunkt (Versatz " + diag.offsetPct.toFixed(0) + "%) – kein systematischer Fehler erkennbar." : "<strong>" + diag.direction.label + "</strong>: " + diag.tip}</div>`;
             })() : ""}
           </div>
         `).join("")}
@@ -1784,20 +1795,20 @@ function renderStatsView() {
   return `
     ${streak && streak.days >= 7 ? `
     <div style="background:${COLORS.card};border:1px solid ${COLORS.brass};border-radius:4px;padding:12px 14px;margin-bottom:16px;">
-      <div style="font-size:13px;color:${COLORS.cream};">Letztes Training vor <strong>${streak.days} Tagen</strong> (${formatDate(streak.lastDate)}) â€“ Zeit fÃ¼r die nÃ¤chste Serie?</div>
+      <div style="font-size:13px;color:${COLORS.cream};">Letztes Training vor <strong>${streak.days} Tagen</strong> (${formatDate(streak.lastDate)}) – Zeit für die nächste Serie?</div>
     </div>
     ` : ""}
-    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">EXPORT Â· GESAMT</div>
+    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">EXPORT · GESAMT</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
       <div class="btn-tab" data-action="export-json" data-value="full" style="flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};">JSON-Sicherung</div>
       <div class="btn-tab" data-action="export-csv" data-value="full" style="flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};">CSV</div>
     </div>
-    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">EXPORT Â· TAGE</div>
-    <div class="btn-tab" data-action="start-export-daily" style="text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};margin-bottom:8px;">Tage auswÃ¤hlen â€¦</div>
+    <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">EXPORT · TAGE</div>
+    <div class="btn-tab" data-action="start-export-daily" style="text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};margin-bottom:8px;">Tage auswählen …</div>
     ${state.showDayExportPicker ? `
       <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div style="font-size:11px;color:${COLORS.muted};letter-spacing:1px;">TAGE AUSWÃ„HLEN</div>
+          <div style="font-size:11px;color:${COLORS.muted};letter-spacing:1px;">TAGE AUSWÄHLEN</div>
           <div style="display:flex;gap:10px;">
             <span data-action="select-all-export-days" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${COLORS.muted};">Alle</span>
             <span data-action="select-none-export-days" style="cursor:pointer;font-size:11px;text-decoration:underline;color:${COLORS.muted};">Keine</span>
@@ -1808,24 +1819,24 @@ function renderStatsView() {
             const checked = state.selectedExportDays.indexOf(d.date) !== -1;
             return `
               <div data-action="toggle-export-day" data-value="${d.date}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:${COLORS.bg};border:1px solid ${checked ? COLORS.cream : COLORS.cardBorder};border-radius:4px;">
-                <div style="font-size:13px;">${formatDate(d.date)} <span style="color:${COLORS.muted};font-size:11px;">Â· ${d.count} Serien</span></div>
+                <div style="font-size:13px;">${formatDate(d.date)} <span style="color:${COLORS.muted};font-size:11px;">· ${d.count} Serien</span></div>
                 <div style="width:16px;height:16px;border-radius:3px;border:1px solid ${checked ? COLORS.cream : COLORS.cardBorder};background:${checked ? COLORS.cream : 'transparent'};"></div>
               </div>
             `;
           }).join("")}
         </div>
-        <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;">${state.selectedExportDays.length} Tag${state.selectedExportDays.length === 1 ? "" : "e"} ausgewÃ¤hlt</div>
+        <div style="font-size:11px;color:${COLORS.muted};margin-bottom:6px;">${state.selectedExportDays.length} Tag${state.selectedExportDays.length === 1 ? "" : "e"} ausgewählt</div>
         <div style="display:flex;gap:6px;margin-bottom:6px;">
           <div class="btn-tab" data-action="export-json" data-value="daily" style="flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.cream};color:${COLORS.bg};">JSON-Sicherung</div>
           <div class="btn-tab" data-action="export-csv" data-value="daily" style="flex:1;text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.cream};color:${COLORS.bg};">CSV</div>
         </div>
-        <div class="btn-tab" data-action="cancel-export-daily" style="text-align:center;padding:9px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">SchlieÃŸen</div>
+        <div class="btn-tab" data-action="cancel-export-daily" style="text-align:center;padding:9px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Schließen</div>
       </div>
     ` : ""}
-    <div class="btn-tab" data-action="trigger-import" style="text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};margin-bottom:8px;">Sicherung importieren (zusammenfÃ¼hren)</div>
+    <div class="btn-tab" data-action="trigger-import" style="text-align:center;padding:9px 0;font-size:13px;font-weight:600;border-radius:2px;border:1px solid ${COLORS.cardBorder};margin-bottom:8px;">Sicherung importieren (zusammenführen)</div>
     ${state.confirmReplaceImport ? `
       <div style="margin-bottom:16px;padding:10px;background:${COLORS.card};border:1px solid ${COLORS.red};border-radius:4px;">
-        <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Wirklich alles ersetzen? Alle aktuellen Serien, Waffen und Munition werden dabei gelÃ¶scht und durch den Inhalt der Datei ersetzt.</div>
+        <div style="font-size:12px;color:${COLORS.cream};margin-bottom:8px;">Wirklich alles ersetzen? Alle aktuellen Serien, Waffen und Munition werden dabei gelöscht und durch den Inhalt der Datei ersetzt.</div>
         <div style="display:flex;gap:6px;">
           <div data-action="confirm-replace-import" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.red};color:${COLORS.bg};">Ja, ersetzen</div>
           <div data-action="cancel-replace-import" style="cursor:pointer;flex:1;text-align:center;padding:8px 0;font-size:13px;border:1px solid ${COLORS.cardBorder};border-radius:2px;">Abbrechen</div>
@@ -1869,12 +1880,12 @@ function printSheetHTML(session) {
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px;">
       <tr><td style="padding:4px 0;color:#555;width:40%;">Datum</td><td class="ps-mono" style="padding:4px 0;font-weight:600;">${formatDate(s.date)}</td></tr>
-      <tr><td style="padding:4px 0;color:#555;">SchieÃŸplatz</td><td style="padding:4px 0;font-weight:600;">${s.range || "â€“"}</td></tr>
-      <tr><td style="padding:4px 0;color:#555;">Distanz</td><td class="ps-mono" style="padding:4px 0;font-weight:600;">${s.distance} m${s.distance===25?" Â· "+(s.discipline==="duell"?"Duell":"PrÃ¤zision"):""}</td></tr>
-      <tr><td style="padding:4px 0;color:#555;">Waffe</td><td style="padding:4px 0;font-weight:600;">${s.weapon || "â€“"} (${s.caliber || "â€“"})</td></tr>
+      <tr><td style="padding:4px 0;color:#555;">Schießplatz</td><td style="padding:4px 0;font-weight:600;">${s.range || "–"}</td></tr>
+      <tr><td style="padding:4px 0;color:#555;">Distanz</td><td class="ps-mono" style="padding:4px 0;font-weight:600;">${s.distance} m${s.distance===25?" · "+(s.discipline==="duell"?"Duell":"Präzision"):""}</td></tr>
+      <tr><td style="padding:4px 0;color:#555;">Waffe</td><td style="padding:4px 0;font-weight:600;">${s.weapon || "–"} (${s.caliber || "–"})</td></tr>
       <tr><td style="padding:4px 0;color:#555;">Modus</td><td style="padding:4px 0;font-weight:600;">${modeLabel}</td></tr>
       ${s.lotNumber ? `<tr><td style="padding:4px 0;color:#555;">Losnummer</td><td class="ps-mono" style="padding:4px 0;font-weight:600;">${s.lotNumber}</td></tr>` : ""}
-      ${s.weather ? `<tr><td style="padding:4px 0;color:#555;">Wetter</td><td style="padding:4px 0;">${Math.round(s.weather.temperature)}Â°C, ${s.weather.windSpeed.toFixed(1)} m/s ${degToCompass(s.weather.windDirection)}, ${Math.round(s.weather.pressure)} hPa</td></tr>` : ""}
+      ${s.weather ? `<tr><td style="padding:4px 0;color:#555;">Wetter</td><td style="padding:4px 0;">${Math.round(s.weather.temperature)}°C, ${s.weather.windSpeed.toFixed(1)} m/s ${degToCompass(s.weather.windDirection)}, ${Math.round(s.weather.pressure)} hPa</td></tr>` : ""}
     </table>
     <div style="font-size:12px;color:#555;margin-bottom:6px;">RINGWERTE</div>
     <div class="ps-mono" style="font-size:16px;letter-spacing:2px;margin-bottom:16px;border:1px solid #999;padding:10px;">${s.shots.map(shotRing).join("  ")}</div>
@@ -1884,7 +1895,7 @@ function printSheetHTML(session) {
     </table>
     ${s.notes ? `<div style="margin-bottom:16px;"><div style="font-size:12px;color:#555;margin-bottom:4px;">NOTIZ</div><div style="font-size:13px;">${s.notes}</div></div>` : ""}
     <div style="margin-top:40px;display:flex;gap:40px;">
-      <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift SchÃ¼tze</div>
+      <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift Schütze</div>
       <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift Aufsicht</div>
     </div>
   `;
@@ -1934,7 +1945,7 @@ function attachListeners() {
         if (found.discipline) state.discipline = found.discipline;
         state.dsbLookupError = null;
       } else {
-        state.dsbLookupError = `â€ž${num}" ist nicht in der hinterlegten Liste bestÃ¤tigter Nummern. Bitte manuell Ã¼ber die Buttons oben wÃ¤hlen oder Distanz/Disziplin direkt einstellen.`;
+        state.dsbLookupError = `„${num}" ist nicht in der hinterlegten Liste bestätigter Nummern. Bitte manuell über die Buttons oben wählen oder Distanz/Disziplin direkt einstellen.`;
       }
       render();
     });
@@ -2158,12 +2169,12 @@ function attachListeners() {
           break;
         }
         case "export-json": {
-          if (value === "daily" && state.selectedExportDays.length === 0) { state.saveError = "Bitte mindestens einen Tag auswÃ¤hlen."; render(); break; }
+          if (value === "daily" && state.selectedExportDays.length === 0) { state.saveError = "Bitte mindestens einen Tag auswählen."; render(); break; }
           exportJSON(value);
           break;
         }
         case "export-csv": {
-          if (value === "daily" && state.selectedExportDays.length === 0) { state.saveError = "Bitte mindestens einen Tag auswÃ¤hlen."; render(); break; }
+          if (value === "daily" && state.selectedExportDays.length === 0) { state.saveError = "Bitte mindestens einen Tag auswählen."; render(); break; }
           exportCSV(value);
           break;
         }

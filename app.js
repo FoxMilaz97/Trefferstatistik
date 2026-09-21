@@ -1898,7 +1898,13 @@ function printSheetHTML(session) {
   // unabhängig vom aktuell aktiven Hell-/Dunkelmodus der App (sonst evtl. helle Linien auf Weiß unsichtbar).
   const savedColors = COLORS;
   COLORS = { bg: "#ffffff", card: "#ffffff", cardBorder: "#333333", cream: "#111111", muted: "#555555", brass: "#8a6b27", brassDark: "#5e4b1b", steel: "#3e5c68", steelDark: "#2b4249", green: "#5c7a42", red: "#b03f30", clay: "#8c4c2b" };
-  const targetHtml = targetSVG(s.shots, s.distance, { size: 220, discipline: s.discipline });
+  const targetHtmlRaw = targetSVG(s.shots, s.distance, { size: 220, discipline: s.discipline });
+  // Für den Druck feste mm-Maße statt der responsiven aspect-ratio-Regel erzwingen (Safari respektiert
+  // aspect-ratio beim Drucken unzuverlässig, was zu einer verzerrten, nicht-quadratischen Scheibe führte).
+  const targetHtml = targetHtmlRaw.replace(
+    /<svg viewBox="0 0 100 100"[^>]*style="[^"]*"/,
+    `<svg viewBox="0 0 100 100" width="80mm" height="80mm" style="display:block;margin:0 auto;"`
+  );
   COLORS = savedColors;
   return `
     <div style="border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:16px;">
@@ -1924,7 +1930,7 @@ function printSheetHTML(session) {
     ${s.notes ? `<div style="margin-bottom:16px;"><div style="font-size:12px;color:#555;margin-bottom:4px;">NOTIZ</div><div style="font-size:13px;">${s.notes}</div></div>` : ""}
     <div style="text-align:center;margin-bottom:20px;">
       <div style="font-size:12px;color:#555;margin-bottom:8px;">TREFFERBILD</div>
-      <div style="display:inline-block;max-width:220px;">${targetHtml}</div>
+      <div style="display:inline-block;">${targetHtml}</div>
     </div>
     <div style="margin-top:40px;display:flex;gap:40px;">
       <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift Schütze</div>

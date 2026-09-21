@@ -362,12 +362,13 @@ function persistAmmo() {
   try { localStorage.setItem(AMMO_KEY, JSON.stringify(AMMO)); } catch (e) {}
 }
 
-function addAmmo(name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChartDist) {
+function addAmmo(name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChartDist, tempSensitivity) {
   if (!name.trim() || !caliber.trim()) return;
   const entry = {
     name: name.trim(), caliber: caliber.trim(),
     v0: Number(v0) || 0, v100: Number(v100) || 0, v200: Number(v200) || 0, v300: Number(v300) || 0,
-    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300
+    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300,
+    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" ? Number(tempSensitivity) : null
   };
   AMMO = AMMO.concat([entry]);
   persistAmmo();
@@ -377,12 +378,13 @@ function addAmmo(name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChar
   render();
 }
 
-function updateAmmo(originalName, name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChartDist) {
+function updateAmmo(originalName, name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChartDist, tempSensitivity) {
   if (!name.trim() || !caliber.trim()) return;
   AMMO = AMMO.map(a => a.name === originalName ? {
     name: name.trim(), caliber: caliber.trim(),
     v0: Number(v0) || 0, v100: Number(v100) || 0, v200: Number(v200) || 0, v300: Number(v300) || 0,
-    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300
+    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300,
+    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" ? Number(tempSensitivity) : null
   } : a);
   persistAmmo();
   if (state.ballisticAmmo === originalName) state.ballisticAmmo = name.trim();
@@ -1419,10 +1421,11 @@ function renderBallisticsView() {
   const configuredMaxDist = state.ballisticMaxDist != null ? state.ballisticMaxDist : Math.max(zero, ammo.maxChartDist || 200);
   const sampleDists = [25, 50, 100, 150, 200, 300].filter(d => d <= configuredMaxDist);
 
-  const vT0 = state.ballisticVT0 != null ? state.ballisticVT0 : ammo.v0;
-  const vT100 = state.ballisticVT100 != null ? state.ballisticVT100 : ammo.v100;
-  const vT200 = state.ballisticVT200 != null ? state.ballisticVT200 : ammo.v200;
-  const vT300 = state.ballisticVT300 != null ? state.ballisticVT300 : ammo.v300;
+  const tempAdjustment = (ammo.tempSensitivity && state.weather) ? ammo.tempSensitivity * (state.weather.temperature - 21) : 0;
+  const vT0 = (state.ballisticVT0 != null ? state.ballisticVT0 : ammo.v0) + tempAdjustment;
+  const vT100 = (state.ballisticVT100 != null ? state.ballisticVT100 : ammo.v100) + tempAdjustment;
+  const vT200 = (state.ballisticVT200 != null ? state.ballisticVT200 : ammo.v200) + tempAdjustment;
+  const vT300 = (state.ballisticVT300 != null ? state.ballisticVT300 : ammo.v300) + tempAdjustment;
 
   const hasWeather = !!state.weather;
   const densityRatio = (hasWeather && state.ballisticUseWeather !== false)
@@ -1459,6 +1462,7 @@ function renderBallisticsView() {
         ? `<div style="font-size:12px;color:${COLORS.cream};margin-top:4px;">${state.range || "Schießplatz"} · ${Math.round(state.weather.temperature)}°C, ${Math.round(state.weather.pressure)} hPa → Luftdichte ${(densityRatio*100).toFixed(0)}% ggü. Standardatmosphäre</div>`
         : `<div style="font-size:12px;color:${COLORS.muted};margin-top:4px;">Keine Wetterdaten für den Schießplatz vorhanden – es wird mit Standardatmosphäre (15°C, 1013 hPa) gerechnet. Wetterdaten lassen sich unter „Neue Serie" beim Schießplatz abrufen.</div>`
       }
+      ${hasWeather && ammo.tempSensitivity ? `<div style="font-size:12px;color:${COLORS.cream};margin-top:4px;">Pulver-Temp.empf. ${ammo.tempSensitivity} m/s/°C → V0 bei ${Math.round(state.weather.temperature)}°C (Ref. 21°C) um ${tempAdjustment >= 0 ? "+" : ""}${tempAdjustment.toFixed(1)} m/s angepasst</div>` : ""}
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px 14px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};letter-spacing:1px;margin-bottom:8px;">WIND</div>
@@ -1527,6 +1531,7 @@ function renderBallisticsView() {
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V300 (m/s)</div><input type="text" inputmode="numeric" id="new-ammo-v300" value="${editingAmmo ? editingAmmo.v300 : ""}" /></div>
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Visierhöhe (cm)</div><input type="text" inputmode="decimal" id="new-ammo-sightheight" value="${editingAmmo ? editingAmmo.sightHeight : "4.5"}" /></div>
             <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Nullpunkt (m)</div><input type="text" inputmode="numeric" id="new-ammo-zero" value="${editingAmmo ? editingAmmo.zero : "100"}" /></div>
+            <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Pulver-Temp.empf. (m/s pro °C, optional)</div><input type="text" inputmode="decimal" id="new-ammo-tempsens" value="${editingAmmo && editingAmmo.tempSensitivity != null ? editingAmmo.tempSensitivity : ""}" placeholder="z. B. 0.8" /></div>
           </div>
           <div style="display:flex;gap:6px;">
             <div class="btn-tab" data-action="save-ammo" style="flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:600;border-radius:2px;background:${COLORS.cream};color:${COLORS.bg};">Speichern</div>
@@ -1548,31 +1553,13 @@ function renderBallisticsView() {
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:14px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:10px;letter-spacing:1px;">PARAMETER · HERSTELLERDATEN</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V0 (m/s)</div>
-          <input type="text" inputmode="numeric" id="ballistic-vt0" value="${vT0}" />
-        </div>
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V100 (m/s)</div>
-          <input type="text" inputmode="numeric" id="ballistic-vt100" value="${vT100}" />
-        </div>
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V200 (m/s)</div>
-          <input type="text" inputmode="numeric" id="ballistic-vt200" value="${vT200}" />
-        </div>
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V300 (m/s)</div>
-          <input type="text" inputmode="numeric" id="ballistic-vt300" value="${vT300}" />
-        </div>
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Visierhöhe (cm)</div>
-          <input type="text" inputmode="decimal" id="ballistic-sightheight" value="${sightHeight}" />
-        </div>
-        <div>
-          <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Nullpunkt (m)</div>
-          <input type="text" inputmode="numeric" id="ballistic-zero" value="${zero}" />
-        </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V0 (m/s)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${vT0}</div></div>
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V100 (m/s)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${vT100}</div></div>
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V200 (m/s)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${vT200}</div></div>
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">V300 (m/s)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${vT300}</div></div>
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Visierhöhe (cm)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${sightHeight}</div></div>
+        <div><div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Nullpunkt (m)</div><div class="mono" style="padding:10px 12px;background:${COLORS.bg};border:1px solid ${COLORS.cardBorder};border-radius:4px;">${zero}</div></div>
         <div>
           <div style="font-size:10px;color:${COLORS.muted};margin-bottom:4px;">Chart bis (m)</div>
           <input type="text" inputmode="numeric" id="ballistic-maxdist" value="${maxDist}" />
@@ -2128,12 +2115,13 @@ function attachListeners() {
           const v300El = document.getElementById("new-ammo-v300");
           const shEl = document.getElementById("new-ammo-sightheight");
           const zeroEl = document.getElementById("new-ammo-zero");
+          const tempSensEl = document.getElementById("new-ammo-tempsens");
           if (nameEl && v0El) {
             const cal = state.newAmmoCaliber || CALIBERS[0];
             if (state.editingAmmoOriginalName) {
-              updateAmmo(state.editingAmmoOriginalName, nameEl.value, cal, v0El.value, v100El.value, v200El.value, v300El.value, shEl.value, zeroEl.value, 300);
+              updateAmmo(state.editingAmmoOriginalName, nameEl.value, cal, v0El.value, v100El.value, v200El.value, v300El.value, shEl.value, zeroEl.value, 300, tempSensEl.value);
             } else {
-              addAmmo(nameEl.value, cal, v0El.value, v100El.value, v200El.value, v300El.value, shEl.value, zeroEl.value, 300);
+              addAmmo(nameEl.value, cal, v0El.value, v100El.value, v200El.value, v300El.value, shEl.value, zeroEl.value, 300, tempSensEl.value);
             }
           }
           break;

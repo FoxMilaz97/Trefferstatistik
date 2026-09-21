@@ -362,13 +362,18 @@ function persistAmmo() {
   try { localStorage.setItem(AMMO_KEY, JSON.stringify(AMMO)); } catch (e) {}
 }
 
+function parseDeNum(v) {
+  if (v === undefined || v === null) return NaN;
+  return Number(String(v).trim().replace(",", "."));
+}
+
 function addAmmo(name, caliber, v0, v100, v200, v300, sightHeight, zero, maxChartDist, tempSensitivity) {
   if (!name.trim() || !caliber.trim()) return;
   const entry = {
     name: name.trim(), caliber: caliber.trim(),
-    v0: Number(v0) || 0, v100: Number(v100) || 0, v200: Number(v200) || 0, v300: Number(v300) || 0,
-    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300,
-    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" ? Number(tempSensitivity) : null
+    v0: parseDeNum(v0) || 0, v100: parseDeNum(v100) || 0, v200: parseDeNum(v200) || 0, v300: parseDeNum(v300) || 0,
+    sightHeight: parseDeNum(sightHeight) || 4, zero: parseDeNum(zero) || 100, maxChartDist: parseDeNum(maxChartDist) || 300,
+    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" && !isNaN(parseDeNum(tempSensitivity)) ? parseDeNum(tempSensitivity) : null
   };
   AMMO = AMMO.concat([entry]);
   persistAmmo();
@@ -382,9 +387,9 @@ function updateAmmo(originalName, name, caliber, v0, v100, v200, v300, sightHeig
   if (!name.trim() || !caliber.trim()) return;
   AMMO = AMMO.map(a => a.name === originalName ? {
     name: name.trim(), caliber: caliber.trim(),
-    v0: Number(v0) || 0, v100: Number(v100) || 0, v200: Number(v200) || 0, v300: Number(v300) || 0,
-    sightHeight: Number(sightHeight) || 4, zero: Number(zero) || 100, maxChartDist: Number(maxChartDist) || 300,
-    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" ? Number(tempSensitivity) : null
+    v0: parseDeNum(v0) || 0, v100: parseDeNum(v100) || 0, v200: parseDeNum(v200) || 0, v300: parseDeNum(v300) || 0,
+    sightHeight: parseDeNum(sightHeight) || 4, zero: parseDeNum(zero) || 100, maxChartDist: parseDeNum(maxChartDist) || 300,
+    tempSensitivity: tempSensitivity !== undefined && tempSensitivity !== "" && !isNaN(parseDeNum(tempSensitivity)) ? parseDeNum(tempSensitivity) : null
   } : a);
   persistAmmo();
   if (state.ballisticAmmo === originalName) state.ballisticAmmo = name.trim();
@@ -1246,8 +1251,9 @@ function distStep(maxDistM) {
   return 100;
 }
 
-function trajectoryChart(points, zeroM, maxDistM) {
-  const w = 220, h = 100, padL = 14, padR = 4, padT = 8, padB = 12;
+function trajectoryChart(points, zeroM, maxDistM, markers) {
+  markers = markers || [];
+  const w = 220, h = 110, padL = 20, padR = 8, padT = 10, padB = 20;
   const ys = points.map(p => p.y);
   const yMaxRaw = Math.max(...ys, 1);
   const yMinRaw = Math.min(...ys, -1);
@@ -1259,63 +1265,94 @@ function trajectoryChart(points, zeroM, maxDistM) {
   const yFor = y => padT + (1 - (y - yMin) / yRange) * (h - padT - padB);
   const zeroLineY = yFor(0);
   const path = points.map(p => `${xFor(p.x)},${yFor(p.y)}`).join(" ");
+  const areaPath = `${xFor(0)},${zeroLineY} ${path} ${xFor(maxDistM)},${zeroLineY}`;
   const zeroX = xFor(zeroM);
   const xTickStep = distStep(maxDistM);
-  let xGrid = "";
+  const plotLeft = padL, plotRight = w - padR, plotTop = padT, plotBottom = h - padB;
+  let xGrid = "", xTicks = "";
   for (let d = 0; d <= maxDistM + 0.01; d += xTickStep) {
     const gx = xFor(d);
-    xGrid += `<line x1="${gx}" y1="${padT}" x2="${gx}" y2="${h-padB}" stroke="${COLORS.cardBorder}" stroke-width="0.25"/>`;
-    xGrid += `<text x="${gx}" y="${h-padB+5}" text-anchor="middle" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${d}</text>`;
+    xGrid += `<line x1="${gx}" y1="${plotTop}" x2="${gx}" y2="${plotBottom}" stroke="${COLORS.cardBorder}" stroke-width="0.2" stroke-dasharray="0.6,0.8"/>`;
+    xTicks += `<line x1="${gx}" y1="${plotBottom}" x2="${gx}" y2="${plotBottom+1.2}" stroke="${COLORS.muted}" stroke-width="0.3"/>`;
+    xTicks += `<text x="${gx}" y="${plotBottom+4.2}" text-anchor="middle" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${d}</text>`;
   }
-  let yGrid = "";
+  let yGrid = "", yTicks = "";
   for (let yv = yMin; yv <= yMax + 0.01; yv += yStep) {
     const gy = yFor(yv);
-    yGrid += `<line x1="${padL}" y1="${gy}" x2="${w-padR}" y2="${gy}" stroke="${COLORS.cardBorder}" stroke-width="0.25"/>`;
-    yGrid += `<text x="${padL-2}" y="${gy+1}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${yv}</text>`;
+    yGrid += `<line x1="${plotLeft}" y1="${gy}" x2="${plotRight}" y2="${gy}" stroke="${COLORS.cardBorder}" stroke-width="0.2" stroke-dasharray="0.6,0.8"/>`;
+    yTicks += `<line x1="${plotLeft-1.2}" y1="${gy}" x2="${plotLeft}" y2="${gy}" stroke="${COLORS.muted}" stroke-width="0.3"/>`;
+    yTicks += `<text x="${plotLeft-2}" y="${gy+1}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${yv}</text>`;
   }
+  const markerDots = markers.map(d => {
+    const p = points.reduce((a,b) => Math.abs(b.x-d) < Math.abs(a.x-d) ? b : a, points[0]);
+    return `<circle cx="${xFor(p.x)}" cy="${yFor(p.y)}" r="0.9" fill="${COLORS.card}" stroke="${COLORS.brass}" stroke-width="0.6"/>`;
+  }).join("");
   return `
     <svg viewBox="0 0 ${w} ${h}" style="width:100%;display:block;aspect-ratio:${w}/${h};" role="img" aria-label="Flugbahn relativ zur Ziellinie">
       ${yGrid}
       ${xGrid}
-      <line x1="${padL}" y1="${zeroLineY}" x2="${w-padR}" y2="${zeroLineY}" stroke="${COLORS.cream}" stroke-width="0.4"/>
-      <line x1="${zeroX}" y1="${padT}" x2="${zeroX}" y2="${h-padB}" stroke="${COLORS.muted}" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.7"/>
-      <polyline points="${path}" fill="none" stroke="${COLORS.brass}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
-      <text x="${w-padR}" y="${zeroLineY - 2}" text-anchor="end" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.cream}">Ziellinie (cm)</text>
-      <text x="${zeroX}" y="${h-2}" text-anchor="middle" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${zeroM}m Nullpunkt</text>
-      <text x="${w-padR}" y="${h-2}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">Distanz (m)</text>
+      <polygon points="${areaPath}" fill="${COLORS.brass}" opacity="0.12"/>
+      <line x1="${plotLeft}" y1="${zeroLineY}" x2="${plotRight}" y2="${zeroLineY}" stroke="${COLORS.cream}" stroke-width="0.4"/>
+      <line x1="${zeroX}" y1="${plotTop}" x2="${zeroX}" y2="${plotBottom}" stroke="${COLORS.muted}" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.7"/>
+      <polyline points="${path}" fill="none" stroke="${COLORS.brass}" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${markerDots}
+      <rect x="${plotLeft}" y="${plotTop}" width="${plotRight-plotLeft}" height="${plotBottom-plotTop}" fill="none" stroke="${COLORS.cardBorder}" stroke-width="0.4"/>
+      ${xTicks}
+      ${yTicks}
+      <text x="${plotLeft}" y="${zeroLineY - 2}" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.cream}">Ziellinie</text>
+      <text x="${zeroX}" y="${plotTop-1.5}" text-anchor="middle" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${zeroM}m Nullpunkt</text>
+      <text x="${(plotLeft+plotRight)/2}" y="${h-2}" text-anchor="middle" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}" letter-spacing="0.3">DISTANZ (M)</text>
+      <text x="${plotLeft-16}" y="${plotTop-2}" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}" letter-spacing="0.3">HÖHE (CM)</text>
     </svg>
   `;
 }
 
-function velocityChart(points) {
-  const w = 220, h = 100, padL = 14, padR = 4, padT = 8, padB = 12;
+function velocityChart(points, markers) {
+  markers = markers || [];
+  const w = 220, h = 110, padL = 20, padR = 8, padT = 10, padB = 20;
   const maxDistM = points[points.length - 1].x;
   const vMaxRaw = Math.max(...points.map(p => p.v));
-  const vStep = niceStep(vMaxRaw, 4);
+  const vMinRaw = Math.min(...points.map(p => p.v));
+  const vStep = niceStep(vMaxRaw - vMinRaw, 4);
   const vMax = Math.ceil(vMaxRaw / vStep) * vStep;
+  const vMin = Math.max(0, Math.floor(vMinRaw / vStep) * vStep);
+  const vRange = Math.max(vMax - vMin, vStep);
   const xFor = x => padL + (x / maxDistM) * (w - padL - padR);
-  const yFor = v => padT + (1 - v / vMax) * (h - padT - padB);
+  const yFor = v => padT + (1 - (v - vMin) / vRange) * (h - padT - padB);
   const path = points.map(p => `${xFor(p.x)},${yFor(p.v)}`).join(" ");
+  const plotLeft = padL, plotRight = w - padR, plotTop = padT, plotBottom = h - padB;
+  const areaPath = `${xFor(0)},${plotBottom} ${path} ${xFor(maxDistM)},${plotBottom}`;
   const xTickStep = distStep(maxDistM);
-  let xGrid = "";
+  let xGrid = "", xTicks = "";
   for (let d = 0; d <= maxDistM + 0.01; d += xTickStep) {
     const gx = xFor(d);
-    xGrid += `<line x1="${gx}" y1="${padT}" x2="${gx}" y2="${h-padB}" stroke="${COLORS.cardBorder}" stroke-width="0.25"/>`;
-    xGrid += `<text x="${gx}" y="${h-padB+5}" text-anchor="middle" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${d}</text>`;
+    xGrid += `<line x1="${gx}" y1="${plotTop}" x2="${gx}" y2="${plotBottom}" stroke="${COLORS.cardBorder}" stroke-width="0.2" stroke-dasharray="0.6,0.8"/>`;
+    xTicks += `<line x1="${gx}" y1="${plotBottom}" x2="${gx}" y2="${plotBottom+1.2}" stroke="${COLORS.muted}" stroke-width="0.3"/>`;
+    xTicks += `<text x="${gx}" y="${plotBottom+4.2}" text-anchor="middle" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${d}</text>`;
   }
-  let yGrid = "";
-  for (let v = 0; v <= vMax + 0.01; v += vStep) {
+  let yGrid = "", yTicks = "";
+  for (let v = vMin; v <= vMax + 0.01; v += vStep) {
     const gy = yFor(v);
-    yGrid += `<line x1="${padL}" y1="${gy}" x2="${w-padR}" y2="${gy}" stroke="${COLORS.cardBorder}" stroke-width="0.25"/>`;
-    yGrid += `<text x="${padL-2}" y="${gy+1}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${v}</text>`;
+    yGrid += `<line x1="${plotLeft}" y1="${gy}" x2="${plotRight}" y2="${gy}" stroke="${COLORS.cardBorder}" stroke-width="0.2" stroke-dasharray="0.6,0.8"/>`;
+    yTicks += `<line x1="${plotLeft-1.2}" y1="${gy}" x2="${plotLeft}" y2="${gy}" stroke="${COLORS.muted}" stroke-width="0.3"/>`;
+    yTicks += `<text x="${plotLeft-2}" y="${gy+1}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${v}</text>`;
   }
+  const markerDots = markers.map(d => {
+    const p = points.reduce((a,b) => Math.abs(b.x-d) < Math.abs(a.x-d) ? b : a, points[0]);
+    return `<circle cx="${xFor(p.x)}" cy="${yFor(p.v)}" r="0.9" fill="${COLORS.card}" stroke="${COLORS.steel}" stroke-width="0.6"/>`;
+  }).join("");
   return `
     <svg viewBox="0 0 ${w} ${h}" style="width:100%;display:block;aspect-ratio:${w}/${h};" role="img" aria-label="Geschwindigkeit über Distanz">
       ${yGrid}
       ${xGrid}
-      <polyline points="${path}" fill="none" stroke="${COLORS.steel}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
-      <text x="${w-padR}" y="${padT-2}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">m/s</text>
-      <text x="${w-padR}" y="${h-2}" text-anchor="end" font-size="2.6" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">Distanz (m)</text>
+      <polygon points="${areaPath}" fill="${COLORS.steel}" opacity="0.12"/>
+      <polyline points="${path}" fill="none" stroke="${COLORS.steel}" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${markerDots}
+      <rect x="${plotLeft}" y="${plotTop}" width="${plotRight-plotLeft}" height="${plotBottom-plotTop}" fill="none" stroke="${COLORS.cardBorder}" stroke-width="0.4"/>
+      ${xTicks}
+      ${yTicks}
+      <text x="${(plotLeft+plotRight)/2}" y="${h-2}" text-anchor="middle" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}" letter-spacing="0.3">DISTANZ (M)</text>
+      <text x="${plotLeft-16}" y="${plotTop-2}" font-size="2.8" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}" letter-spacing="0.3">V (M/S)</text>
     </svg>
   `;
 }
@@ -1571,11 +1608,11 @@ function renderBallisticsView() {
     <div class="grid-2">
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px 8px 8px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">FLUGBAHN RELATIV ZUR ZIELLINIE (IDEALLINIE)</div>
-      ${trajectoryChart(points, zero, maxDist)}
+      ${trajectoryChart(points, zero, maxDist, sampleDists)}
     </div>
     <div style="background:${COLORS.card};border:1px solid ${COLORS.cardBorder};border-radius:4px;padding:12px 8px 8px;margin-bottom:16px;">
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:4px;padding-left:6px;">GESCHWINDIGKEIT ÜBER DISTANZ</div>
-      ${velocityChart(points)}
+      ${velocityChart(points, sampleDists)}
     </div>
     </div>
     <div class="grid-2">

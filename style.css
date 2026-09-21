@@ -79,7 +79,14 @@
   .hidden { display: none !important; }
   #print-sheet { display: none; }
   @media print {
+    @page { size: A4; margin: 15mm; }
     #app > *:not(#print-sheet) { display: none !important; }
-    #print-sheet { display: block !important; background: #fff; color: #111; padding: 20px; font-family: Arial, sans-serif; }
+    #app { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+    #print-sheet {
+      display: block !important; background: #fff; color: #111; font-family: Arial, sans-serif;
+      width: 100%; max-width: 180mm; margin: 0 auto; padding: 0; box-sizing: border-box;
+    }
     #print-sheet .ps-mono { font-family: 'JetBrains Mono', monospace; }
+    #print-sheet table { width: 100%; table-layout: fixed; }
+    #print-sheet svg { display: block; }
   }

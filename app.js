@@ -130,6 +130,7 @@ let state = {
   pendingImportMode: "merge",
   noteText: "",
   lotNumber: "",
+  ammoName: "",
   competitionPreset: null,
   dsbLookupError: null,
   printSessionId: null,
@@ -627,7 +628,7 @@ async function saveSeries() {
     distance: state.distance,
     weapon: state.weapon, caliber: state.caliber, mode: state.mode, discipline: state.discipline,
     range: state.range, weather: state.weather,
-    notes: state.noteText.trim(), lotNumber: state.lotNumber.trim(),
+    notes: state.noteText.trim(), lotNumber: state.lotNumber.trim(), ammoName: state.ammoName || null,
     presetName: state.competitionPreset ? (state.discipline === "duell" ? state.competitionPreset.name.replace("Präzision-Hälfte", "Duell-Hälfte") : state.competitionPreset.name) : null,
     competitionGroupId: state.competitionGroupId || null,
     shots: state.shots.slice(), sum, avg: sum / state.shots.length
@@ -640,6 +641,9 @@ async function saveSeries() {
   state.shots = [];
   state.noteText = "";
   state.lotNumber = "";
+  if (state.discipline === "duell" && state.competitionPreset) {
+    state.competitionGroupId = null; // Wettkampf-Teilnahme abgeschlossen, nächste bekommt neue Gruppe
+  }
   state.editingId = null;
   state.savedFlash = true;
   persist();
@@ -1007,6 +1011,11 @@ function renderNewView() {
           </div>
         </div>
       ` : `<div data-action="start-add-caliber" style="cursor:pointer;font-size:12px;color:${COLORS.muted};text-decoration:underline;margin-bottom:14px;">+ Kaliber hinzufügen</div>`}
+      <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">MUNITION (OPTIONAL)</div>
+      <select id="series-ammo-select" style="margin-bottom:14px;">
+        <option value="">– keine Angabe –</option>
+        ${AMMO.filter(a => a.caliber === state.caliber).map(a => `<option value="${a.name}" ${state.ammoName===a.name?"selected":""}>${a.name}</option>`).join("")}
+      </select>
       <div style="font-size:11px;color:${COLORS.muted};margin-bottom:8px;letter-spacing:1px;">MODUS</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         ${MODES.map(m => `
@@ -1349,28 +1358,39 @@ function reticleSVG(type, holdovers) {
       if (m <= 6) milLabels += `<text x="${cx+2.6}" y="${cy-m*unitsPerMil+1}" font-size="2.4" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${m}</text>`;
     }
   } else {
+    // Spec-Fakten für Meopta MRAD RD (bestätigt via Meopta-Herstellerdaten + Snipers-Hide-Test):
+    // nur 1 Mil Graduierung oberhalb der Mitte ("offener Top"), Tannenbaum unterhalb kombiniert aus
+    // einem 0,2-Mil-Punktraster UND zusätzlichen 0,5-Mil-Zwischenpunkten (zwei sich überlagernde Raster).
+    // Rechnung in Zehntel-Mil als Ganzzahl, um Fließkomma-Rundungsfehler zu vermeiden.
     pattern += `<line x1="${cx}" y1="${cy+9.5*unitsPerMil}" x2="${cx}" y2="${h-2}" stroke="${COLORS.cream}" stroke-width="0.9"/>`;
-    pattern += `<line x1="${cx}" y1="2" x2="${cx}" y2="${cy-2}" stroke="${COLORS.cream}" stroke-width="1.6"/>`;
+    pattern += `<line x1="${cx}" y1="2" x2="${cx}" y2="${cy-1*unitsPerMil}" stroke="${COLORS.cream}" stroke-width="1.6"/>`;
     pattern += `<line x1="2" y1="${cy}" x2="${cx-4.5*unitsPerMil}" y2="${cy}" stroke="${COLORS.cream}" stroke-width="1.6"/>`;
     pattern += `<line x1="${cx+4.5*unitsPerMil}" y1="${cy}" x2="${w-2}" y2="${cy}" stroke="${COLORS.cream}" stroke-width="1.6"/>`;
-    for (let m = 0; m <= 3.5; m += 0.5) {
-      pattern += `<line x1="${cx-m}" y1="${cy}" x2="${cx-m}" y2="${cy-0.6}" stroke="${COLORS.cream}" stroke-width="0.3"/>`;
-      pattern += `<line x1="${cx+m}" y1="${cy}" x2="${cx+m}" y2="${cy-0.6}" stroke="${COLORS.cream}" stroke-width="0.3"/>`;
+    // horizontale Windmarken: 0,2-Mil-Ticks (Ganzzahl-Schritte i=2,4,6,...36 entspricht 0,2..3,6 Mil), 0,5-Mil-Vielfache länger
+    for (let i = 2; i <= 36; i += 2) {
+      const m = i / 10;
+      const isHalfGrid = i % 5 === 0; // 5,10(=0,5,1,0)... vielfache von 0,5 Mil
+      const tickLen = isHalfGrid ? 0.9 : 0.5;
+      pattern += `<line x1="${cx-m*unitsPerMil}" y1="${cy}" x2="${cx-m*unitsPerMil}" y2="${cy-tickLen}" stroke="${COLORS.cream}" stroke-width="0.25"/>`;
+      pattern += `<line x1="${cx+m*unitsPerMil}" y1="${cy}" x2="${cx+m*unitsPerMil}" y2="${cy-tickLen}" stroke="${COLORS.cream}" stroke-width="0.25"/>`;
     }
-    // feines Tannenbaum-Raster: dichte Zeilen alle 0,5 Mil, mit kleinen Windage-Strichmarken
-    for (let m = 0.5; m <= 9; m += 0.5) {
-      const y = cy + m*unitsPerMil;
+    // Tannenbaum unterhalb: Vereinigung aus 0,2-Mil-Raster (i%2===0, i=2..90) und 0,5-Mil-Zwischenpunkten (i%5===0)
+    const positions = new Set();
+    for (let i = 2; i <= 90; i += 2) positions.add(i); // 0,2 / 0,4 / 0,6 / 0,8 / 1,0 ...
+    for (let i = 5; i <= 90; i += 5) positions.add(i);  // 0,5 / 1,0 / 1,5 / 2,0 ...
+    [...positions].sort((a,b) => a-b).forEach(i => {
+      const m = i / 10;
+      const y = cy + m * unitsPerMil;
+      const isWhole = i % 10 === 0;
+      const isHalf = i % 5 === 0;
       const halfWidth = 1 + m * 1.1;
-      const isWhole = m % 1 === 0;
-      pattern += `<line x1="${cx-halfWidth}" y1="${y}" x2="${cx+halfWidth}" y2="${y}" stroke="${COLORS.cream}" stroke-width="${isWhole ? 0.5 : 0.25}"/>`;
-      const tickCount = Math.max(2, Math.round(halfWidth / 1.3));
-      for (let t = 1; t <= tickCount; t++) {
-        const tx = (halfWidth / tickCount) * t;
-        pattern += `<line x1="${cx-tx}" y1="${y-0.5}" x2="${cx-tx}" y2="${y+0.5}" stroke="${COLORS.cream}" stroke-width="0.25"/>`;
-        pattern += `<line x1="${cx+tx}" y1="${y-0.5}" x2="${cx+tx}" y2="${y+0.5}" stroke="${COLORS.cream}" stroke-width="0.25"/>`;
+      if (isWhole) {
+        pattern += `<line x1="${cx-halfWidth}" y1="${y}" x2="${cx+halfWidth}" y2="${y}" stroke="${COLORS.cream}" stroke-width="0.5"/>`;
+        milLabels += `<text x="${cx+halfWidth+1.2}" y="${y+1}" font-size="2.2" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${i/10}</text>`;
+      } else {
+        pattern += `<circle cx="${cx}" cy="${y}" r="${isHalf ? 0.35 : 0.22}" fill="${COLORS.cream}"/>`;
       }
-      if (isWhole) milLabels += `<text x="${cx+halfWidth+1.2}" y="${y+1}" font-size="2.2" font-family="'JetBrains Mono',monospace" fill="${COLORS.muted}">${m}</text>`;
-    }
+    });
   }
   const overlay = holdovers.map((hv) => {
     const y = cy + hv.mrad * unitsPerMil;
@@ -1747,6 +1767,7 @@ function renderStatsView() {
                 ${s.range ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">${s.range}${s.weather ? " · " + Math.round(s.weather.temperature) + "°C, " + s.weather.windSpeed.toFixed(1) + " m/s " + degToCompass(s.weather.windDirection) : ""}</div>` : ""}
                 ${s.presetName ? `<div style="font-size:11px;color:${COLORS.brass};margin-top:2px;">${s.presetName}</div>` : ""}
                 ${s.lotNumber ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">Los: ${s.lotNumber}</div>` : ""}
+                ${s.ammoName ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">Munition: ${s.ammoName}</div>` : ""}
                 ${s.notes ? `<div style="font-size:11px;color:${COLORS.cream};margin-top:2px;font-style:italic;">„${s.notes}"</div>` : ""}
                 ${(() => { const g = groupStats(s.shots, s.distance, s.discipline); return g ? `<div style="font-size:11px;color:${COLORS.muted};margin-top:2px;">ES ${g.extremeSpreadCm.toFixed(1)} cm (${g.extremeSpreadPct.toFixed(1)}%) · MR ${g.meanRadiusCm.toFixed(1)} cm (${g.meanRadiusPct.toFixed(1)}%)</div>` : ""; })()}
               </div>
@@ -1885,6 +1906,7 @@ function printSheetHTML(session) {
       <tr><td style="padding:4px 0;color:#555;">Waffe</td><td style="padding:4px 0;font-weight:600;">${s.weapon || "–"} (${s.caliber || "–"})</td></tr>
       <tr><td style="padding:4px 0;color:#555;">Modus</td><td style="padding:4px 0;font-weight:600;">${modeLabel}</td></tr>
       ${s.lotNumber ? `<tr><td style="padding:4px 0;color:#555;">Losnummer</td><td class="ps-mono" style="padding:4px 0;font-weight:600;">${s.lotNumber}</td></tr>` : ""}
+      ${s.ammoName ? `<tr><td style="padding:4px 0;color:#555;">Munition</td><td style="padding:4px 0;font-weight:600;">${s.ammoName}</td></tr>` : ""}
       ${s.weather ? `<tr><td style="padding:4px 0;color:#555;">Wetter</td><td style="padding:4px 0;">${Math.round(s.weather.temperature)}°C, ${s.weather.windSpeed.toFixed(1)} m/s ${degToCompass(s.weather.windDirection)}, ${Math.round(s.weather.pressure)} hPa</td></tr>` : ""}
     </table>
     <div style="font-size:12px;color:#555;margin-bottom:6px;">RINGWERTE</div>
@@ -1952,6 +1974,8 @@ function attachListeners() {
   }
   const lotInput = document.getElementById("lot-input");
   if (lotInput) lotInput.addEventListener("change", (e) => { state.lotNumber = e.target.value; });
+  const seriesAmmoSelect = document.getElementById("series-ammo-select");
+  if (seriesAmmoSelect) seriesAmmoSelect.addEventListener("change", (e) => { state.ammoName = e.target.value; });
   const dsbSelect = document.getElementById("dsb-discipline-select");
   if (dsbSelect) {
     dsbSelect.addEventListener("change", (e) => {

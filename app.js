@@ -1894,6 +1894,12 @@ function printSheetHTML(session) {
   if (!session) return "";
   const s = session;
   const modeLabel = s.mode ? (MODES.find(m => m.key === s.mode) ? MODES.find(m => m.key === s.mode).label : s.mode) : "";
+  // Zielscheibe für den Druck immer mit fester, papierfreundlicher Farbpalette rendern,
+  // unabhängig vom aktuell aktiven Hell-/Dunkelmodus der App (sonst evtl. helle Linien auf Weiß unsichtbar).
+  const savedColors = COLORS;
+  COLORS = { bg: "#ffffff", card: "#ffffff", cardBorder: "#333333", cream: "#111111", muted: "#555555", brass: "#8a6b27", brassDark: "#5e4b1b", steel: "#3e5c68", steelDark: "#2b4249", green: "#5c7a42", red: "#b03f30", clay: "#8c4c2b" };
+  const targetHtml = targetSVG(s.shots, s.distance, { size: 220, discipline: s.discipline });
+  COLORS = savedColors;
   return `
     <div style="border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:16px;">
       <div style="font-size:11px;letter-spacing:2px;color:#555;">SCHIESSSTAND-PROTOKOLL</div>
@@ -1916,6 +1922,10 @@ function printSheetHTML(session) {
       <tr><td style="padding:6px 0;color:#555;">Schnitt</td><td class="ps-mono" style="padding:6px 0;font-weight:700;font-size:22px;text-align:right;">${s.avg.toFixed(2)}</td></tr>
     </table>
     ${s.notes ? `<div style="margin-bottom:16px;"><div style="font-size:12px;color:#555;margin-bottom:4px;">NOTIZ</div><div style="font-size:13px;">${s.notes}</div></div>` : ""}
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:12px;color:#555;margin-bottom:8px;">TREFFERBILD</div>
+      <div style="display:inline-block;max-width:220px;">${targetHtml}</div>
+    </div>
     <div style="margin-top:40px;display:flex;gap:40px;">
       <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift Schütze</div>
       <div style="flex:1;border-top:1px solid #111;padding-top:6px;font-size:11px;color:#555;">Unterschrift Aufsicht</div>
